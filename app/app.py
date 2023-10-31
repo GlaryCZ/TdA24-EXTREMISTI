@@ -22,6 +22,9 @@ db.init_app(app)
 def hello_world():  # put application's code here
     return "Hello Tour de App! Edited Twice :)"
 
+@app.route("/api")
+def api_request():
+    return '{"secret":"The cake is a lie"}.'
 
 if __name__ == '__main__':
     app.run()
