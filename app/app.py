@@ -20,7 +20,10 @@ db.init_app(app)
 
 @app.route('/')
 def hello_world():  # put application's code here
-    return "Hello Tour de App! Edited Twice :)"
+    return """
+        <p>Hello Tour de App! Edited Twice :)</p>
+        <p> Hello TdA </p>
+"""
 
 @app.route("/api")
 def api_request():
