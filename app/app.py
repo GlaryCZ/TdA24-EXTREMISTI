@@ -22,7 +22,7 @@ db.init_app(app)
 def hello_world():  # put application's code here
     return """
         <p>Hello Tour de App! Edited Twice :)</p>
-        <p> Hello TdA </p>
+        <p> Hello TdA kubova druha kontribuce</p>
 """
 
 @app.route("/api")
