@@ -27,7 +27,7 @@ def hello_world():  # this is main big change madee
 
 @app.route("/api")
 def api_request():
-    return jsonify(secret="The cake is a lie!?")
+    return jsonify(secret="The cake is a lie")
 
 if __name__ == '__main__':
     app.run()
