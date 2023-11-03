@@ -19,7 +19,7 @@ db.init_app(app)
 
 
 @app.route('/')
-def hello_world():  # put application's code here
+def hello_world():  # this is main
     return """
         <p>Hello Tour de App! Edited Twice :)</p>
         <p> Hello TdA kubova kontribuce, pomoc</p>
