@@ -19,7 +19,7 @@ db.init_app(app)
 
 
 @app.route('/')
-def hello_world():  # put application's code here
+def hello_world():
     return "Hello Tour de App! Edited Twice :)"
 
 @app.route("/api")
