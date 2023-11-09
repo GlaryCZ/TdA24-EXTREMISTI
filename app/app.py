@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from . import db
 
 app = Flask(__name__)
@@ -19,11 +19,12 @@ db.init_app(app)
 
 
 @app.route('/')
-def hello_world():  # this is main big change madee
-    return """
-        <p>Hello Tour de App! Edited Twice :)</p>
-        <p> Hello TdA kubova kontribuce, pomoc</p>
-"""
+def homepage():
+    return render_template('homepage.html')
+
+@app.route("/lecturer")
+def lecturer_profile():
+    return render_template('lecturer.html')
 
 @app.route("/api")
 def api_request():
