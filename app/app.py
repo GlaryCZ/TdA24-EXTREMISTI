@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, json
 from . import db
 
 app = Flask(__name__)
@@ -24,7 +24,9 @@ def homepage():
 
 @app.route("/lecturer")
 def lecturer_profile():
-    return render_template('lecturer.html')
+    with open("app/lecturer.json", encoding="UTF8") as file:
+        lecturer = json.load(file)
+    return render_template('lecturer.html', lecturer = lecturer)
 
 @app.route("/api")
 def api_request():
