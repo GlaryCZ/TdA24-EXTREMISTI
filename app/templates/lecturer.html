@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<h1>Lecturer profile</h1>
+<h2>
+{% if lecturer.title_before %}{{lecturer.title_before}} {% endif %}
+{% if lecturer.first_name %}{{lecturer.first_name}} {% endif %}
+{% if lecturer.middle_name %}{{lecturer.middle_name}} {% endif %}
+{% if lecturer.last_name %}{{lecturer.last_name}} {% endif %}
+{% if lecturer.title_after %}{{lecturer.title_after}}{% endif %}</h2>
+<p>{{lecturer.claim}}</p>
+<div>{{lecturer.bio|safe}}</div>
+<h3>Tagy:</h3>
+<ul>
+{% for tag in lecturer.tags %}
+  <li>{{ tag.name|e }}</li>
+{% endfor %}
+</ul>
+<h3>Cena</h3>
+<p>{{lecturer.price_per_hour}} kč za hodinu</p>
+<h3>Kontakt</h3>
+<h4>telefon</h4>
+<ul>
+{% for phone in lecturer.contact.telephone_numbers %}
+  <li>{{ phone|e }}</li>
+{% endfor %}
+</ul>
+<h4>e-mail</h4>
+<ul>
+{% for mail in lecturer.contact.emails %}
+  <li>{{ mail|e }}</li>
+{% endfor %}
+</ul>
