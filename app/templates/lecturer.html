@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
+{% block content %}
 <h1>Lecturer profile</h1>
 <h2>
 {% if lecturer.title_before %}{{lecturer.title_before}} {% endif %}
@@ -32,3 +33,4 @@
   <li>{{ mail|e }}</li>
 {% endfor %}
 </ul>
+{% endblock%}

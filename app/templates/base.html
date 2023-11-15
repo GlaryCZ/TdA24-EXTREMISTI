@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+    {% block head %}
+    {% endblock%}
+</head>
+<body>
+    <div id="nav-bar">
+        <h1>TDA</h1>
+        <a href = "{{url_for('homepage')|e}}">Home</a><a>  </a>
+        <a href = "{{url_for('lecturer_profile')|e}}">Lecturer</a><a>  </a>
+        <a href = "{{url_for('api_request')|e}}">API</a>
+    </div>
+    <div id="content">{% block content %}{% endblock%}</div>
+    <div id="footer">
+        {% block footer %}
+        <h1>End of page</h1>
+        <h2>TEACHER DIGITAL AGENCY</h2>
+        {% endblock%}
+    </div>
+</body>
+</html>
