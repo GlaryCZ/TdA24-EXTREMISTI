@@ -7,6 +7,7 @@
 {% if lecturer.last_name %}{{lecturer.last_name}} {% endif %}
 {% if lecturer.title_after %}{{lecturer.title_after}}{% endif %}</h2>
 <p>{{lecturer.claim}}</p>
+<img src="{{lecturer.picture_url}}" alt="Profile picture" width="100" height="100">
 <div>{{lecturer.bio|safe}}</div>
 <h3>Tagy:</h3>
 <ul>
