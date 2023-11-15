@@ -18,6 +18,8 @@
 <h3>Cena</h3>
 <p>{{lecturer.price_per_hour}} kč za hodinu</p>
 <h3>Kontakt</h3>
+<h4>lokace:</h4>
+  <p>{{ lecturer.location|e }}</p>
 <h4>telefon</h4>
 <ul>
 {% for phone in lecturer.contact.telephone_numbers %}
