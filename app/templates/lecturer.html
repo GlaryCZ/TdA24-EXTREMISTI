@@ -1,36 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Lecturer profile</h1>
-<h2>
-{% if lecturer.title_before %}{{lecturer.title_before}} {% endif %}
-{% if lecturer.first_name %}{{lecturer.first_name}} {% endif %}
-{% if lecturer.middle_name %}{{lecturer.middle_name}} {% endif %}
-{% if lecturer.last_name %}{{lecturer.last_name}} {% endif %}
-{% if lecturer.title_after %}{{lecturer.title_after}}{% endif %}</h2>
-<p>{{lecturer.claim}}</p>
-<img src="{{lecturer.picture_url}}" alt="Profile picture" width="100" height="100">
-<div>{{lecturer.bio|safe}}</div>
-<h3>Tagy:</h3>
-<ul>
-{% for tag in lecturer.tags %}
-  <li>{{ tag.name|e }}</li>
-{% endfor %}
-</ul>
-<h3>Cena</h3>
-<p>{{lecturer.price_per_hour}} kč za hodinu</p>
-<h3>Kontakt</h3>
-<h4>lokace:</h4>
-  <p>{{ lecturer.location|e }}</p>
-<h4>telefon</h4>
-<ul>
-{% for phone in lecturer.contact.telephone_numbers %}
-  <li>{{ phone|e }}</li>
-{% endfor %}
-</ul>
-<h4>e-mail</h4>
-<ul>
-{% for mail in lecturer.contact.emails %}
-  <li>{{ mail|e }}</li>
-{% endfor %}
-</ul>
+<!-- <h1>Lecturer profile</h1> -->
+<div id="profile">
+<div class="lecturer-header">
+  <h1 class="lecturer-name">
+  {% if lecturer.title_before %}{{lecturer.title_before}} {% endif %}
+  {% if lecturer.first_name %}{{lecturer.first_name}} {% endif %}
+  {% if lecturer.middle_name %}{{lecturer.middle_name}} {% endif %}
+  {% if lecturer.last_name %}{{lecturer.last_name}} {% endif %}
+  {% if lecturer.title_after %}{{lecturer.title_after}}{% endif %}</h1>
+  <p class="lecturer-claim">{{lecturer.claim}}</p>
+</div>
+<div class="lecturer-about">
+  <h2 id="about-header">O mně: </h2>
+  <div>{{lecturer.bio|safe}}</div>
+</div>
+<div class="lecturer-center">
+  <img class="profile-picture" src="{{lecturer.picture_url}}" alt="Profile picture">
+</div>
+<div class="lecturer-details">
+  <h2>Tagy:</h2>
+  <ul>
+    {% for tag in lecturer.tags %}
+      <li class="tag">{{ tag.name|e }}</li>
+    {% endfor %}
+  </ul>
+  <h3>Cena:</h3>
+  <ul>
+    <li class="tag">{{lecturer.price_per_hour}} kč za hodinu</li>
+  </ul>
+  <h3>Lokace:</h3>
+  <ul>
+    <li class="tag">{{ lecturer.location|e }}</li>
+  </ul>
+  <h3>Kontakt:</h3>
+  <ul>
+    {% for phone in lecturer.contact.telephone_numbers %}
+      <li>{{ phone|e }}</li>
+    {% endfor %}
+    {% for mail in lecturer.contact.emails %}
+      <li>{{ mail|e }}</li>
+    {% endfor %}
+  </ul>
+  </div>
+</div>
 {% endblock%}
+

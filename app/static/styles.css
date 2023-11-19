@@ -1,0 +1,82 @@
+* {
+    color: #333333;
+  }
+
+html {
+    background-color: #87ceeb;
+}
+
+
+h3 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+p {
+    margin-left: 15px;
+    text-indent: 20px;
+    font-size: 20px;
+}
+
+ul {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#profile {
+    margin-left: 50px;
+    margin-right: 50px;
+    box-shadow: 0 0 3px 5px #74b2ca;
+}
+
+.lecturer-about {
+    background-color: skyblue;
+    display: inline-block;
+    width: 33%;
+    height: 100%;
+    vertical-align: top;
+}
+
+.lecturer-center {
+    display: inline-block;
+    width: 33%;
+    height: auto;
+    vertical-align: top;
+}
+
+.lecturer-details {
+    width: 33%;
+    display: inline-block;
+    height: auto;
+    vertical-align: top;
+}
+
+.lecturer-name {
+    padding-top: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.lecturer-claim {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.profile-picture {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    display: block;
+    border-radius: 30%;
+}
+
+.tag {
+    font-size: 18px;
+}
+#nav-bar {
+    background-color: red;
+}
+#about-header {
+    margin-left: 20px;
+}
