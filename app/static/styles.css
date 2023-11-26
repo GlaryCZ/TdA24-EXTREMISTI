@@ -1,9 +1,20 @@
+/*  skyblue, 
+    cerna - #333333, 
+    white, 
+    tmave-modra - #00384d, 
+    sunglow - #FECB2E
+*/
+
 * {
-    color: #333333;
-  }
+    color: skyblue ; /*  #333333  */
+}
 
 html {
-    background-color: #87ceeb;
+    background-color: #333333; /* #87ceeb */
+}
+
+h1, h2, h3, h4 {
+    color: #FECB2E;
 }
 
 
@@ -26,11 +37,10 @@ ul {
 #profile {
     margin-left: 50px;
     margin-right: 50px;
-    box-shadow: 0 0 3px 5px #74b2ca;
+    box-shadow: 0 0 3px 5px #202020; /*  #74b2ca  */
 }
 
 .lecturer-about {
-    background-color: skyblue;
     display: inline-block;
     width: 33%;
     height: 100%;
