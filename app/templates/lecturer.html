@@ -16,7 +16,11 @@
   <div>{{lecturer.bio|safe}}</div>
 </div>
 <div class="lecturer-center">
+  {% if lecturer.picture_url %}
   <img class="profile-picture" src="{{lecturer.picture_url}}" alt="Profile picture">
+  {% else %}
+  <img class="profile-picture" src="https://lh3.googleusercontent.com/u/0/drive-viewer/AK7aPaC-v3J5MIjSXqC1xIeJz08S85KcL6MDqYvxZMNqPOVvh5hWgYOvCaV_HhSadWPrzreh9SL2lDo7qr-ZdkMO5SVA1Kh3nQ=w1418-h924" alt="Profile picture">
+  {% endif %}
 </div>
 <div class="lecturer-details">
   <h2>Tagy:</h2>
@@ -25,14 +29,19 @@
       <li class="tag">{{ tag.name|e }}</li>
     {% endfor %}
   </ul>
+  {% if lecturer.price_per_hour %}
   <h3>Cena:</h3>
   <ul>
     <li class="tag">{{lecturer.price_per_hour}} kč za hodinu</li>
   </ul>
+  {% endif %}
+  {% if lecturer.location %}
   <h3>Lokace:</h3>
   <ul>
     <li class="tag">{{ lecturer.location|e }}</li>
   </ul>
+  {% endif %}
+  {% if lecturer.contact %}
   <h3>Kontakt:</h3>
   <ul>
     {% for phone in lecturer.contact.telephone_numbers %}
@@ -42,6 +51,7 @@
       <li>{{ mail|e }}</li>
     {% endfor %}
   </ul>
+  {% endif %}
   </div>
 </div>
 {% endblock%}
