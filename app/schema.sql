@@ -6,13 +6,12 @@ CREATE TABLE IF NOT EXISTS lecturers (
     last_name TEXT,
     title_after TEXT,
     picture_url TEXT,
-    location TEXT,
+    "location" TEXT,
     claim TEXT,
     bio TEXT,
     tags JSON DEFAULT('[]'),
-    price_per_hour INTEGER
-    emails JSON DEFAULT('[]'),
-    phone_numbers JSON DEFAULT('[]'),
+    price_per_hour INTEGER,
+    contact JSON DEFAULT('{}')
 );
 CREATE TABLE IF NOT EXISTS tags (
   UUID TEXT UNIQUE NOT NULL,
