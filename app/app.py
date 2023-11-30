@@ -17,10 +17,27 @@ except OSError:
 
 db.init_app(app)
 
-def lecturer_to_dict(json_string):
+def lecturer_row_dict(json_string):
     data = json.loads(json_string)
-    new_uuid = str(make_uuid())
-    lecturer = {"UUID":new_uuid}
+    lecturer = {}
+    if "tags" in data:
+        tag_list = []
+        for tag in data["tags"]:
+            if "uuid" in tag:
+                tag_list.append(tag["uuid"])
+            elif "name" in tag:
+                row = get_tag("name", tag["name"])
+                if row is None:
+                    tag_uuid = str(make_uuid())
+                    db.get_db().execute(
+                        'INSERT INTO tags VALUES (?, ?);',
+                        [tag_uuid, tag["name"]])
+                    db.get_db().commit()
+                else:
+                    tag_uuid = row[0]
+                tag_list.append(tag_uuid)
+        lecturer["tags"]=json.dumps(tag_list)
+        data.pop("tags")
     for item in data:
         if item in ["tags", "contact"]:
             lecturer[item] = json.dumps(data[item])
@@ -29,10 +46,21 @@ def lecturer_to_dict(json_string):
     return lecturer
 
 def row_to_lecturer(row):
-    return {COLUMNS[i] : (json.loads(row[i]) if COLUMNS[i] in ["tags", "contact"] else row[i]) for i in range(len(COLUMNS)) if (not row[i] is None)}
+    data = {COLUMNS[i] : row[i] for i in range(len(COLUMNS)) if (not row[i] is None)}
+    if "contact" in data:
+        data["contact"] = json.loads(data["contact"])
+    if "tags" in data:
+        data["tags"] = [{"uuid":id, "name":get_tag("uuid", id)[1]} for id in json.loads(data["tags"])]
+    return data
 
 def get_lecturer_row(uuid):
     cursor = db.get_db().execute('select * from lecturers where uuid = ?', [uuid])
+    row = cursor.fetchone()
+    cursor.close()
+    return row
+
+def get_tag(param, value):
+    cursor = db.get_db().execute('select * from tags where '+param+' = ?', [value])
     row = cursor.fetchone()
     cursor.close()
     return row
@@ -54,7 +82,7 @@ def profile(uuid):
         return jsonify(code=404, message="User not found"), 404
     return render_template('lecturer.html', lecturer = row_to_lecturer(row))
 
-COLUMNS = ["UUID", "title_before", "first_name", "middle_name", "last_name", "title_after",
+COLUMNS = ["uuid", "title_before", "first_name", "middle_name", "last_name", "title_after",
            "picture_url", "location", "claim", "bio", "tags", "price_per_hour", "contact"]
 
 @app.route("/api")
@@ -71,9 +99,9 @@ def api_get_all_lecturers():
 @app.post("/api/lecturers")
 def api_add_lecturer():
     #data = json.loads(request.data)
-    lecturer = lecturer_to_dict(request.data)
+    lecturer = lecturer_row_dict(request.data)
     new_uuid = str(make_uuid())
-    lecturer["UUID"] = new_uuid
+    lecturer["uuid"] = new_uuid
     values = ', '.join(['?' for _ in range(len(lecturer))])
     db.get_db().execute(
         'INSERT INTO lecturers (' + (', '.join([k for k in lecturer])) + ') VALUES ('+values+');',
@@ -90,11 +118,11 @@ def api_lecturer(uuid):
     if request.method == "DELETE":
         db.get_db().execute("DELETE FROM lecturers WHERE uuid = ?", [uuid])
         db.get_db().commit()
-        return 204
+        return jsonify(204)
     if request.method == "GET":
         return jsonify(row_to_lecturer(row))
     if request.method == "PUT":
-        lecturer = lecturer_to_dict(request.data)
+        lecturer = lecturer_row_dict(request.data)
         db.get_db().execute(
             'UPDATE lecturers SET '+ ', '.join([k+" = ?" for k in lecturer]) +' WHERE uuid = ?',
             [lecturer[k] for k in lecturer]+[uuid])
