@@ -2,4 +2,38 @@
 {% block content %}
 <p>Hello Tour de App! Edited Twice :)</p>
 <p>Hello TdA kubova kontribuce, pomoc</p>
+<div id="filters">
+  <form method="post">
+    <input type="submit" value="Search"><br>
+    <label>Price</label><br>
+    <input type="number" name="min_price" min="0" 
+      {% if last_searched.min_price %} value="{{last_searched.min_price}}" {% endif %}><br>
+    <input type="number" name="max_price" min="1"
+      {% if last_searched.max_price %} value="{{last_searched.max_price}}" {% endif %}><br>
+    <label>Location</label><br>
+    <input type="text" name="location"
+      {% if last_searched.location %} value="{{last_searched.location}}" {% endif %}><br>
+    <label>Tags</label><br>
+    {% for tag in tags %}
+      <input type="checkbox" id="{{tag.uuid}}" name="{{tag.uuid}}"
+      {% if last_searched[tag.uuid] == "on"%} checked{% endif %}>
+      <label for="{{tag.uuid}}" class="tag"> {{tag.name}}</label><br>
+    {% endfor %}
+  </form>
+</div>
+{% for lecturer in lecturers %}<a href="{{url_for('profile', uuid=lecturer.uuid)}}">
+  <div id="profile">
+    <img class="profile-picture" src="{{lecturer.picture_url}}" alt="Profile picture">
+    <h3 class="lecturer-name">
+    {% if lecturer.title_before %}{{lecturer.title_before}} {% endif %}
+    {% if lecturer.first_name %}{{lecturer.first_name}} {% endif %}
+    {% if lecturer.middle_name %}{{lecturer.middle_name}} {% endif %}
+    {% if lecturer.last_name %}{{lecturer.last_name}} {% endif %}
+    {% if lecturer.title_after %}{{lecturer.title_after}}{% endif %}
+    </h3>
+    <p class="lecturer-claim"><i>{{lecturer.claim}}</i></p>
+    {% if lecturer.price_per_hour %}<p>{{lecturer.price_per_hour}} kč za hodinu</p>{% endif %}
+    {% if lecturer.location %}<p>{{ lecturer.location|e }}</p>{% endif %}
+  </div></a>
+{% endfor %}
 {% endblock%}

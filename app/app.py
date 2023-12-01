@@ -41,12 +41,14 @@ def lecturer_row_dict(json_string):
     for item in data:
         if item in ["tags", "contact"]:
             lecturer[item] = json.dumps(data[item])
-        if item in COLUMNS:
+        elif item in COLUMNS:
             lecturer[item] = data[item]
     return lecturer
 
 def row_to_lecturer(row):
     data = {COLUMNS[i] : row[i] for i in range(len(COLUMNS)) if (not row[i] is None)}
+    if "price_per_hour" in data:
+        data["price_per_hour"] = int(data["price_per_hour"])
     if "contact" in data:
         data["contact"] = json.loads(data["contact"])
     if "tags" in data:
@@ -65,9 +67,36 @@ def get_tag(param, value):
     cursor.close()
     return row
 
-@app.route('/')
+@app.route('/', methods = ["GET", "POST"])
 def homepage():
-    return render_template('homepage.html')
+    parameters = {}
+    my_tags = []
+    data = {}
+    if request.method == "POST":
+        data = dict(request.form)
+        print(data)
+        if "min_price" in data and data["min_price"] !='':
+            parameters["price_per_hour > ?"] = data["min_price"]
+        if "max_price" in data and data["max_price"] !='':
+            parameters["price_per_hour < ?"] = data["max_price"]
+        if "location" in data and data["location"] !='':
+            parameters["location = ?"] = data["location"]
+        my_tags = [t for t in data if not t in ["min_price","max_price","location"]]
+    
+    cursor = db.get_db().execute(
+        'SELECT * FROM lecturers' + (' WHERE 'if len(parameters) > 0 else'') +
+        ' AND '.join([k for k in parameters]), [parameters[k] for k in parameters])
+    rows = cursor.fetchall()
+    cursor.close()
+    lecturers = [row_to_lecturer(row) for row in rows]
+    cursor = db.get_db().execute('SELECT * FROM tags')
+    rows = cursor.fetchall()
+    cursor.close()
+    tags = [{"uuid":row[0], "name":row[1]}for row in rows]
+    lecturers = [k for k in lecturers if all(tag in [i["uuid"] for i in k["tags"]] for tag in my_tags)]
+
+
+    return render_template('homepage.html', lecturers = lecturers, tags = tags, last_searched = data)
 
 @app.route("/lecturer")
 def lecturer_profile():
@@ -98,7 +127,6 @@ def api_get_all_lecturers():
 
 @app.post("/api/lecturers")
 def api_add_lecturer():
-    #data = json.loads(request.data)
     lecturer = lecturer_row_dict(request.data)
     new_uuid = str(make_uuid())
     lecturer["uuid"] = new_uuid
