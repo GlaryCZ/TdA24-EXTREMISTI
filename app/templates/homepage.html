@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<p>Hello Tour de App! Edited Twice :)</p>
-<p>Hello TdA kubova kontribuce, pomoc</p>
+<h1>Vyhledávání lektorů</h1>
 <div id="filters">
   <form method="post">
     <input type="submit" value="Search"><br>
@@ -24,13 +23,13 @@
 {% for lecturer in lecturers %}<a href="{{url_for('profile', uuid=lecturer.uuid)}}">
   <div id="profile">
     <img class="profile-picture" src="{{lecturer.picture_url}}" alt="Profile picture">
-    <h3 class="lecturer-name">
+    <p class="lecturer-name">
     {% if lecturer.title_before %}{{lecturer.title_before}} {% endif %}
     {% if lecturer.first_name %}{{lecturer.first_name}} {% endif %}
     {% if lecturer.middle_name %}{{lecturer.middle_name}} {% endif %}
     {% if lecturer.last_name %}{{lecturer.last_name}} {% endif %}
     {% if lecturer.title_after %}{{lecturer.title_after}}{% endif %}
-    </h3>
+    </p>
     <p class="lecturer-claim"><i>{{lecturer.claim}}</i></p>
     {% if lecturer.price_per_hour %}<p>{{lecturer.price_per_hour}} kč za hodinu</p>{% endif %}
     {% if lecturer.location %}<p>{{ lecturer.location|e }}</p>{% endif %}
