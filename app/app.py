@@ -39,6 +39,7 @@ def lecturer_row_dict(json_string):
         lecturer["tags"]=json.dumps(tag_list)
         data.pop("tags")
     for item in data:
+        if data[item] is None: continue
         if item in ["tags", "contact"]:
             lecturer[item] = json.dumps(data[item])
         elif item in COLUMNS:
@@ -46,7 +47,7 @@ def lecturer_row_dict(json_string):
     return lecturer
 
 def row_to_lecturer(row):
-    data = {COLUMNS[i] : row[i] for i in range(len(COLUMNS)) if (not row[i] is None)}
+    data = {COLUMNS[i] : (row[i] if (not row[i] is None) else '') for i in range(len(COLUMNS))}
     if "price_per_hour" in data:
         data["price_per_hour"] = int(data["price_per_hour"])
     if "contact" in data:
@@ -130,7 +131,7 @@ def api_add_lecturer():
     lecturer = lecturer_row_dict(request.data)
     new_uuid = str(make_uuid())
     lecturer["uuid"] = new_uuid
-    values = ', '.join(['?' for _ in range(len(lecturer))])
+    values = ', '.join(['?' for _ in lecturer])
     db.get_db().execute(
         'INSERT INTO lecturers (' + (', '.join([k for k in lecturer])) + ') VALUES ('+values+');',
         [lecturer[k] for k in lecturer])
@@ -147,14 +148,15 @@ def api_lecturer(uuid):
         db.get_db().execute("DELETE FROM lecturers WHERE uuid = ?", [uuid])
         db.get_db().commit()
         return jsonify(204)
-    if request.method == "GET":
+    elif request.method == "GET":
         return jsonify(row_to_lecturer(row))
-    if request.method == "PUT":
+    elif request.method == "PUT":
         lecturer = lecturer_row_dict(request.data)
         db.get_db().execute(
             'UPDATE lecturers SET '+ ', '.join([k+" = ?" for k in lecturer]) +' WHERE uuid = ?',
             [lecturer[k] for k in lecturer]+[uuid])
         db.get_db().commit()
+        row = get_lecturer_row(uuid)
         return jsonify(row_to_lecturer(row))
 
 if __name__ == '__main__':
