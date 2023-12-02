@@ -129,12 +129,12 @@ def api_get_all_lecturers():
 @app.post("/api/lecturers")
 def api_add_lecturer():
     data = json.loads(request.data)
-    if not "first_name" in data:
+    if not "first_name" in data or data["first_name"] is None:
         return jsonify(code=404, message="Missing required parameters first_name"), 404
-    if not "last_name" in data:
+    if not "last_name" in data or data["last_name"] is None:
         return jsonify(code=404, message="Missing required parameters last_name"), 404
     if ("contact" in data and (not data["contact"] is None) and
-        not all((p in data["contact"]) for p in ["telephone_numbers", "emails"])):
+        not all((p in data["contact"] or data["contact"][p] is None) for p in ["telephone_numbers", "emails"])):
         return jsonify(code=404, message="Missing required parameters in contacts"), 404
     lecturer = lecturer_row_dict(request.data)
     new_uuid = str(make_uuid())
