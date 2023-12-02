@@ -48,11 +48,11 @@ def lecturer_row_dict(json_string):
 
 def row_to_lecturer(row):
     data = {COLUMNS[i] : row[i] for i in range(len(COLUMNS))}
-    if "price_per_hour" in data:
+    if "price_per_hour" in data and not data["price_per_hour"] is None:
         data["price_per_hour"] = int(data["price_per_hour"])
-    if "contact" in data:
+    if "contact" in data and not data["contact"] is None:
         data["contact"] = json.loads(data["contact"])
-    if "tags" in data:
+    if "tags" in data and not data["tags"] is None:
         data["tags"] = [{"uuid":id, "name":get_tag("uuid", id)[1]} for id in json.loads(data["tags"])]
     return data
 
@@ -133,8 +133,8 @@ def api_add_lecturer():
         return jsonify(code=404, message="Missing required parameters first_name"), 404
     if not "last_name" in data:
         return jsonify(code=404, message="Missing required parameters last_name"), 404
-    if ("contact" in data and 
-        not all((p in data["contact"]) for p in ["first_name", "last_name"])):
+    if ("contact" in data and (not data["contact"] is None) and
+        not all((p in data["contact"]) for p in ["telephone_numbers", "emails"])):
         return jsonify(code=404, message="Missing required parameters in contacts"), 404
     lecturer = lecturer_row_dict(request.data)
     new_uuid = str(make_uuid())

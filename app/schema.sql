@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS lecturers (
     bio TEXT,
     tags JSON DEFAULT('[]'),
     price_per_hour INTEGER,
-    contact JSON DEFAULT('{}')
+    contact JSON
 );
 CREATE TABLE IF NOT EXISTS tags (
   UUID TEXT UNIQUE NOT NULL,
