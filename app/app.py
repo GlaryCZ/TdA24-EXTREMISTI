@@ -128,6 +128,14 @@ def api_get_all_lecturers():
 
 @app.post("/api/lecturers")
 def api_add_lecturer():
+    data = json.loads(request.data)
+    if not "first_name" in data:
+        return jsonify(code=404, message="Missing required parameters first_name"), 404
+    if not "last_name" in data:
+        return jsonify(code=404, message="Missing required parameters last_name"), 404
+    if ("contact" in data and 
+        not all((p in data["contact"]) for p in ["first_name", "last_name"])):
+        return jsonify(code=404, message="Missing required parameters in contacts"), 404
     lecturer = lecturer_row_dict(request.data)
     new_uuid = str(make_uuid())
     lecturer["uuid"] = new_uuid
@@ -147,7 +155,7 @@ def api_lecturer(uuid):
     if request.method == "DELETE":
         db.get_db().execute("DELETE FROM lecturers WHERE uuid = ?", [uuid])
         db.get_db().commit()
-        return jsonify(204)
+        return jsonify(code=204, message="Profile deleted"), 204
     elif request.method == "GET":
         return jsonify(row_to_lecturer(row))
     elif request.method == "PUT":
