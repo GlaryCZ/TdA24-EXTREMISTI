@@ -47,7 +47,7 @@ def lecturer_row_dict(json_string):
     return lecturer
 
 def row_to_lecturer(row):
-    data = {COLUMNS[i] : (row[i] if (not row[i] is None) else '') for i in range(len(COLUMNS))}
+    data = {COLUMNS[i] : row[i] for i in range(len(COLUMNS))}
     if "price_per_hour" in data:
         data["price_per_hour"] = int(data["price_per_hour"])
     if "contact" in data:
