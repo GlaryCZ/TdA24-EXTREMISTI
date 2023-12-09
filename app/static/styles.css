@@ -40,6 +40,15 @@ ul {
     box-shadow: 0 0 3px 5px #202020; /*  #74b2ca  */
 }
 
+.inp-price {
+    background: transparent;
+}
+
+.tag-checkbox {
+    float: left;
+    cursor: pointer;
+}
+
 .lecturer-about {
     display: inline-block;
     width: 33%;
@@ -90,3 +99,13 @@ ul {
 #about-header {
     margin-left: 20px;
 }
+
+#filters {
+    display: inline-block;
+}
+
+#amount-max {
+    background: fixed;
+    text-align: right;
+}
+
