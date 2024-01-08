@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block content %}
+{% block head%}
 <!-- jquerry -->
 
   <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
@@ -11,7 +11,7 @@
     $( "#slider-range" ).slider({
       range: true,
       min: 0,
-      max: 5000,
+      max: {{ max_price }},
       values: [ $('#amount-min').val(), $('#amount-max').val() ],
       slide: function( event, ui ) {
         $( "#amount-min" ).val(ui.values[ 0 ]);
@@ -21,52 +21,56 @@
   } );
   </script>
 <!-- jquerry -->
+{% endblock%}
+{% block content %}
 <h1>Vyhledávání lektorů</h1>
 <div id="filters">
   <datalist id="seznam-lokaci">
     <option value="Praha"></option>
     <option value="Brno"></option>
-    <option value="Gaysexov"></option>
   </datalist>
   <form method="post">
     <input type="submit" value="Search"><br>
-    <label>Price range:</label><br>
-    
+    <label>
+      Price range:
+    </label><br>
     <div id="slider-range"></div>
     <input type="text" id="amount-min" name="min_price" class="inp-price" {% if last_searched.min_price %} value="{{last_searched.min_price}}" {% endif %} readonly>
-    <input type="text" id="amount-max" name="max_price" class="inp-price" {% if last_searched.max_price %} value="{{last_searched.max_price}}" {% endif %} readonly><br>
-    <label>Location</label><br>
-    <input type="text" name="location" placeholder="Lokace" list="seznam-lokaci"
-      {% if last_searched.location %} value="{{last_searched.location}}" {% endif %}><br>
-    <label>Tags</label><br>
-    <!-- test tag -->
-    <label class="tag-checkbox">
-      <input type="checkbox" checked="checked">
-      <span class="checkmark"></span>
-      One
-    </label>
-    
-    <!-- test tag -->
+    <input type="text" id="amount-max" name="max_price" class="inp-price" {% if last_searched.max_price %} value="{{last_searched.max_price}}" {% endif %} readonly>
+    <label>
+      Location
+      <input type="text" name="location" placeholder="Lokace" list="seznam-lokaci"
+      {% if last_searched.location %} value="{{last_searched.location|e}}" {% endif %}>
+    </label><br>
+    <label>
+      Tags
+    </label><br>
     {% for tag in tags %}
-      <input type="checkbox" class="tag-checkbox" id="{{tag.uuid}}" name="{{tag.uuid}}"
-      {% if last_searched[tag.uuid] == "on"%} checked{% endif %}>
-      <label for="{{tag.uuid}}" class="tag"> {{tag.name}}</label><br>
+      <label for="{{tag.uuid}}"> 
+        <a class="tag">{{tag.name|e}}</a>
+        <input type="checkbox" class="tag-checkbox" id="{{tag.uuid}}" name="{{tag.uuid}}" {% if last_searched[tag.uuid] == "on"%} checked{% endif %}>
+      </label><br>
     {% endfor %}
   </form>
 </div>
-{% for lecturer in lecturers %}<a href="{{url_for('profile', uuid=lecturer.uuid)}}">
+<div id="profile-list">
+{% for lecturer in lecturers %}
   <div id="profile">
-    <img class="profile-picture" src="{{lecturer.picture_url}}" alt="Profile picture">
+    <a href="{{url_for('profile', uuid=lecturer.uuid)}}">
+    <img class="profile-picture" src="{{lecturer.picture_url|e if lecturer.picture_url else url_for('static', filename='TdA_sipka_modrocerna.png')}}" alt="Profile picture">
     <p class="lecturer-name">
-    {% if lecturer.title_before %}{{lecturer.title_before}} {% endif %}
-    {% if lecturer.first_name %}{{lecturer.first_name}} {% endif %}
-    {% if lecturer.middle_name %}{{lecturer.middle_name}} {% endif %}
-    {% if lecturer.last_name %}{{lecturer.last_name}} {% endif %}
-    {% if lecturer.title_after %}{{lecturer.title_after}}{% endif %}
+    {% if lecturer.title_before %}{{lecturer.title_before|e}} {% endif %}
+    {% if lecturer.first_name %}{{lecturer.first_name|e}} {% endif %}
+    {% if lecturer.middle_name %}{{lecturer.middle_name|e}} {% endif %}
+    {% if lecturer.last_name %}{{lecturer.last_name|e}} {% endif %}
+    {% if lecturer.title_after %}{{lecturer.title_after|e}}{% endif %}
     </p>
-    <p class="lecturer-claim"><i>{{lecturer.claim}}</i></p>
-    {% if lecturer.price_per_hour %}<p>{{lecturer.price_per_hour}} kč za hodinu</p>{% endif %}
+    <p class="lecturer-claim"><i>{{lecturer.claim|e}}</i></p>
+    {% if lecturer.price_per_hour %}<p>{{lecturer.price_per_hour|e}} kč za hodinu</p>{% endif %}
     {% if lecturer.location %}<p>{{ lecturer.location|e }}</p>{% endif %}
-  </div></a>
+    <p>{% for tag in lecturer.tags %} <a class="tag">{{tag.name|e}}</a>{% endfor %}</p>
+    </a>
+  </div>
 {% endfor %}
+</div>
 {% endblock%}
