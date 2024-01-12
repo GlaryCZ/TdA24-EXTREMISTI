@@ -78,11 +78,10 @@ def homepage():
     data = {}
     if request.method == "POST":
         data = dict(request.form)
-        print(data)
         if "min_price" in data and data["min_price"] !='':
-            parameters["price_per_hour > ?"] = data["min_price"]
+            parameters["price_per_hour >= ?"] = data["min_price"]
         if "max_price" in data and data["max_price"] !='':
-            parameters["price_per_hour < ?"] = data["max_price"]
+            parameters["price_per_hour <= ?"] = data["max_price"]
         if "location" in data and data["location"] !='':
             parameters["location = ?"] = data["location"]
         my_tags = [t for t in data if not t in ["min_price","max_price","location"]]
@@ -93,14 +92,17 @@ def homepage():
     rows = cursor.fetchall()
     cursor.close()
     lecturers = [row_to_lecturer(row) for row in rows]
+    lecturers = [k for k in lecturers if all(tag in [i["uuid"] for i in k["tags"]] for tag in my_tags)]
+
     cursor = db.get_db().execute('SELECT * FROM tags')
     rows = cursor.fetchall()
     cursor.close()
     tags = [{"uuid":row[0], "name":row[1]}for row in rows]
-    lecturers = [k for k in lecturers if all(tag in [i["uuid"] for i in k["tags"]] for tag in my_tags)]
-
-
-    return render_template('homepage.html', lecturers = lecturers, tags = tags, last_searched = data)
+    
+    cursor = db.get_db().execute("SELECT MAX(price_per_hour) FROM lecturers; ")
+    max_price = cursor.fetchone()[0]
+    cursor.close()
+    return render_template('homepage.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price)
 
 @app.route("/lecturer")
 def lecturer_profile():

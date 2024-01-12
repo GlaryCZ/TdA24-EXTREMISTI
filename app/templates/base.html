@@ -1,25 +1,33 @@
 <!DOCTYPE html>
 
 <head>
+    <style>
+      @font-face { font-family: Lalezar; src: url("{{url_for('static', filename='Lalezar-Regular.ttf')}}"); } 
+      h1, h2, h3, h4{
+         font-family: Lalezar
+      }
+      @font-face { font-family: OpenSans; src: url("{{url_for('static', filename='OpenSans-VariableFont_wdth,wght.ttf')}}"); } 
+      p, a, form {
+         font-family: OpenSans
+      }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     {% block head %}
     {% endblock%}
 </head>
 <body>
     <div id="nav-bar">
-        <h1>TDA</h1>
-        <a href = "{{url_for('homepage')|e}}">Home</a><a>  </a>
-        <a href = "{{url_for('lecturer_profile')|e}}">Lecturer</a><a>  </a>
-        <a href = "{{url_for('api_request')|e}}">API</a>
+        <a href = "{{url_for('homepage')|e}}">
+            <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" style="vertical-align:middle;margin:30px 30px">
+        </a>
     </div>
     <div id="content">{% block content %}{% endblock%}</div>
     <div id="footer">
         {% block footer %}
-        <h1>End of page</h1>
-        <h2>TEACHER DIGITAL AGENCY</h2>
         {% endblock%}
     </div>
 </body>

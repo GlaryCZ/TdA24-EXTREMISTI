@@ -34,14 +34,24 @@ ul {
     margin-top: 10px;
 }
 
+label {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
 #profile {
     margin-left: 50px;
     margin-right: 50px;
     box-shadow: 0 0 3px 5px #202020; /*  #74b2ca  */
 }
 
+#slider-range {
+    margin: 10px;
+}
 .inp-price {
+    float: left;
     background: transparent;
+    width: 40%;
 }
 
 .tag-checkbox {
@@ -86,22 +96,43 @@ ul {
     margin-left: auto;
     margin-right: auto;
     margin-top: 100px;
+    height: 150px;
+    width: 150px;
     display: block;
     border-radius: 30%;
 }
 
 .tag {
+    background-color: #FECB2E;
+    color: #333333;
+    padding: 3px;
     font-size: 18px;
+    border-radius: 5px;
 }
 #nav-bar {
     background-color: #00384D;
+    margin: -10px -10px;
+    width: 100%;
+}
+#footer {
+    width: 100%;
+    margin: -10px -10px;
+    color: #00384D;
 }
 #about-header {
     margin-left: 20px;
 }
 
 #filters {
-    display: inline-block;
+    float: left;
+    width: 20%;
+    border: 5px #FECB2E;
+    box-shadow: 0 0 3px 5px #202020; /*  #74b2ca  */
+}
+
+#profile-list {
+    float: left;
+    width: 80%;
 }
 
 #amount-max {

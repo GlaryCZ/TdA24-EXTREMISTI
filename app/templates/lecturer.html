@@ -4,44 +4,44 @@
 <div id="profile">
 <div class="lecturer-header">
   <h1 class="lecturer-name">
-  {% if lecturer.title_before %}{{lecturer.title_before}} {% endif %}
-  {% if lecturer.first_name %}{{lecturer.first_name}} {% endif %}
-  {% if lecturer.middle_name %}{{lecturer.middle_name}} {% endif %}
-  {% if lecturer.last_name %}{{lecturer.last_name}} {% endif %}
-  {% if lecturer.title_after %}{{lecturer.title_after}}{% endif %}</h1>
-  <p class="lecturer-claim">{{lecturer.claim}}</p>
+  {% if lecturer.title_before %}{{lecturer.title_before|e}} {% endif %}
+  {% if lecturer.first_name %}{{lecturer.first_name|e}} {% endif %}
+  {% if lecturer.middle_name %}{{lecturer.middle_name|e}} {% endif %}
+  {% if lecturer.last_name %}{{lecturer.last_name|e}} {% endif %}
+  {% if lecturer.title_after %}{{lecturer.title_after|e}}{% endif %}</h1>
+  <p class="lecturer-claim">{{lecturer.claim|e}}</p>
 </div>
 <div class="lecturer-about">
   <h2 id="about-header">O mně: </h2>
-  <div>{{lecturer.bio|safe}}</div>
+  <p>
+    {{lecturer.bio|safe}}
+  </p>
 </div>
 <div class="lecturer-center">
-  <img class="profile-picture" src="{{lecturer.picture_url}}" alt="Profile picture">
+  <img class="profile-picture" src="{{lecturer.picture_url if lecturer.picture_url else url_for('static', filename='TdA_sipka_modrocerna.png')}}" alt="Profile picture">
 </div>
 <div class="lecturer-details">
   <h2>Tagy:</h2>
-  <ul>
+  <p>
     {% for tag in lecturer.tags %}
-      <li class="tag">{{ tag.name|e }}</li>
+      <a class="tag">{{ tag.name|e }}</a>
     {% endfor %}
-  </ul>
+  </p>
   <h3>Cena:</h3>
-  <ul>
-    <li class="tag">{{lecturer.price_per_hour}} kč za hodinu</li>
-  </ul>
+  <p>
+    {{lecturer.price_per_hour|e}} kč za hodinu
+  </p>
   <h3>Lokace:</h3>
-  <ul>
-    <li class="tag">{{ lecturer.location|e }}</li>
-  </ul>
+  <p>
+    {{ lecturer.location|e }}
+  </p>
   <h3>Kontakt:</h3>
-  <ul>
     {% for phone in lecturer.contact.telephone_numbers %}
-      <li>{{ phone|e }}</li>
+      <p>{{ phone|e }}</p>
     {% endfor %}
     {% for mail in lecturer.contact.emails %}
-      <li>{{ mail|e }}</li>
+      <p>{{ mail|e }}</p>
     {% endfor %}
-  </ul>
   </div>
 </div>
 {% endblock%}
