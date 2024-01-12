@@ -23,7 +23,9 @@
 <!-- jquerry -->
 {% endblock%}
 {% block content %}
+<div id="lector-search-text">
 <h1>Vyhledávání lektorů</h1>
+</div>
 <div id="filters">
   <datalist id="seznam-lokaci">
     <option value="Praha"></option>
@@ -35,13 +37,13 @@
     </label><br>
     <div id="slider-range"></div>
     <input type="text" id="amount-min" name="min_price" class="inp-price" {% if last_searched.min_price %}
-      value="{{last_searched.min_price}}" {% endif %} readonly>
+      value="{{last_searched.min_price}}" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
     <input type="text" id="amount-max" name="max_price" class="inp-price" {% if last_searched.max_price %}
-      value="{{last_searched.max_price}}" {% endif %} readonly><br>
-    <label id="location-text">lokace</label><br>
-    <input type="text" name="location" placeholder="Lokace" list="seznam-lokaci" {% if last_searched.location %}
+      value="{{last_searched.max_price}}" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" /><br>
+    <label id="location-text">lokalita</label><br>
+    <input type="text" name="location" placeholder="Město" list="seznam-lokaci" id="location-input-field" {% if last_searched.location %}
       value="{{last_searched.location}}" {% endif %}><br>
-    <label>Tags</label><br>
+    <label id="tags-text">Tagy</label><br>
     {% for tag in tags %}
     <label for="{{tag.uuid}}">
       <a class="tag">{{tag.name|e}}</a>
@@ -49,7 +51,7 @@
         last_searched[tag.uuid]=="on" %} checked{% endif %}>
     </label><br>
     {% endfor %}
-    <input type="submit" value="Search" class="button"><br>
+    <input type="submit" value="Hledat" class="button"><br>
   </form>
 </div>
 <div id="profile-list">
