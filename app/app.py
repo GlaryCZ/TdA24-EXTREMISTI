@@ -1,7 +1,7 @@
 import os
 from uuid import uuid4 as make_uuid
 from flask import Flask, jsonify, render_template, json, request
-from . import db
+import db
 
 app = Flask(__name__)
 
@@ -15,7 +15,10 @@ try:
 except OSError:
     pass
 
-db.init_app(app)
+with app.app_context():
+    db.init_db()
+    db.init_app(app)
+    
 
 def lecturer_row_dict(json_string):
     data = json.loads(json_string)
