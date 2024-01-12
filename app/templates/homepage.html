@@ -11,7 +11,7 @@
     $("#slider-range").slider({
       range: true,
       min: 0,
-      max: {{ max_price }},
+      max: {{max_price}},
     values: [$('#amount-min').val(), $('#amount-max').val()],
     slide: function (event, ui) {
       $("#amount-min").val(ui.values[0]);
@@ -30,7 +30,7 @@
     <option value="Brno"></option>
   </datalist>
   <form method="post">
-    <input type="submit" value="Search"><br>
+    <input type="submit" value="Search" class="button"><br>
     <label>
       Price range:
     </label><br>
