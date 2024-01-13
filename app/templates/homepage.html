@@ -1,11 +1,13 @@
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='slider-styles.css')}}">
+
 {% extends "base.html" %}
 {% block head%}
 <!-- jquerry -->
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
 <script>
   $(function () {
     $("#slider-range").slider({
@@ -36,16 +38,16 @@
       Cena od/do:
     </label><br>
     <div id="slider-range"></div>
-    <input type="text" id="amount-min" name="min_price" class="inp-price" {% if last_searched.min_price %}
+    <input type="text" id="amount-min" placeholder="od" name="min_price" class="inp-price" {% if last_searched.min_price %}
       value="{{last_searched.min_price}}" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
-    <input type="text" id="amount-max" name="max_price" class="inp-price" {% if last_searched.max_price %}
+    <input type="text" id="amount-max" placeholder="do" name="max_price" class="inp-price" {% if last_searched.max_price %}
       value="{{last_searched.max_price}}" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" /><br>
-    <label id="location-text">lokalita</label><br>
+    <label id="location-text">Lokalita</label><br>
     <input type="text" name="location" placeholder="Město" list="seznam-lokaci" id="location-input-field" {% if last_searched.location %}
       value="{{last_searched.location}}" {% endif %}><br>
     <label id="tags-text">Tagy</label><br>
     {% for tag in tags %}
-    <label for="{{tag.uuid}}">
+    <label for="{{tag.uuid}}" class="checkbox-label">
       <a class="tag">{{tag.name|e}}</a>
       <input type="checkbox" class="tag-checkbox" id="{{tag.uuid}}" name="{{tag.uuid}}" {% if
         last_searched[tag.uuid]=="on" %} checked{% endif %}>

@@ -1,0 +1,68 @@
+#slider-range {
+    margin: 10px;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    border-bottom-right-radius: 10px;
+}
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+    border-bottom-left-radius: 10px;
+}
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+    border-top-right-radius: 10px;
+}
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+    border-top-left-radius: 10px;
+}
+.ui-widget-content {
+    background: #00384D;
+    color: #333333;
+}
+.ui-widget {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 1em;
+}
+.ui-slider-horizontal {
+    height: .8em;
+}
+.ui-slider {
+    position: relative;
+    text-align: left;
+}
+
+.ui-slider-horizontal .ui-slider-range {
+    top: 0;
+    height: 100%;
+}
+.ui-slider .ui-slider-range {
+    position: absolute;
+    z-index: 1;
+    font-size: .7em;
+    display: block;
+    border: 0;
+    background-position: 0 0;
+}
+
+.ui-widget-header {
+    border: 1px solid #dddddd;
+    background: #FECB2E;
+    font-weight: bold;
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+    background: skyblue;
+    font-weight: normal;
+    color: #454545;
+}
+.ui-slider-horizontal .ui-slider-handle {
+    top: -.3em;
+    margin-left: -.6em;
+}
+.ui-slider .ui-slider-handle {
+    position: absolute;
+    z-index: 2;
+    width: 1.4em;
+    height: 1.4em;
+    cursor: pointer;
+    -ms-touch-action: none;
+    touch-action: none;
+}
