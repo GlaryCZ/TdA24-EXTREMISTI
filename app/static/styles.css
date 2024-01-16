@@ -56,6 +56,11 @@ footer {
     position:relative;
 }
 
+div {
+    height: auto;
+    width: auto;
+}
+
 #profile {
     box-shadow: 0 0 3px 5px #202020; /*  #74b2ca  */
     padding-bottom: 1px;
