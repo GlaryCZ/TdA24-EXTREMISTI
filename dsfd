@@ -1,0 +1,271 @@
+[33mcommit bcd3a03953892a9bb4a74ecb2f3c52fb9c718278[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Tue Jan 16 17:00:23 2024 +0100
+
+    visuals
+
+[33mcommit d60ae122ca93f083daf91070d483690f18549652[m
+Merge: 5059acb 173ed15
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Mon Jan 15 17:32:17 2024 +0100
+
+    Merge branch 'main' of https://github.com/GlaryCZ/TdA24-EXTREMISTI into main
+
+[33mcommit 173ed157ec6ac2b7d13c7f812edb471e0b035053[m
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Sun Jan 14 18:55:23 2024 +0100
+
+    Bugfix
+
+[33mcommit 5059acba2c2311e05b66500082c90664a94f83e9[m[33m ([m[1;31morigin/KubaVisuals[m[33m, [m[1;32mKubaVisuals[m[33m)[m
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Sat Jan 13 12:58:14 2024 +0100
+
+    kuba KubaVisuals update
+
+[33mcommit ecb33d36169ac877759a11a881ddf3b9bc188247[m
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Fri Jan 12 18:36:53 2024 +0100
+
+    visul
+
+[33mcommit 41bdd093f3e48fdec8a213115b04711b41402900[m
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Fri Jan 12 17:02:26 2024 +0100
+
+    visual vylepseni
+
+[33mcommit 554fbebb276b15d5ce189d19df0a67e4d79992d8[m
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Fri Jan 12 15:54:53 2024 +0100
+
+    toto mi funguje
+
+[33mcommit 59fb9aa6446d6185befc7f7382072d31e0fc5815[m
+Merge: 2c87c7b d2ca16c
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Fri Jan 12 15:31:48 2024 +0100
+
+    Merge commit 'd2ca16c19335c6f9b76c969a13d5bdca70b76403' into main
+
+[33mcommit 2c87c7bee814428f2de4899eb632f9eae8fe64b9[m
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Fri Jan 12 15:24:06 2024 +0100
+
+    committed
+
+[33mcommit d2ca16c19335c6f9b76c969a13d5bdca70b76403[m[33m ([m[1;31morigin/tom_visuals[m[33m, [m[1;32mtom_visuals[m[33m)[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Mon Jan 8 21:03:05 2024 +0100
+
+    Fixed some visuals
+
+[33mcommit 5e05a4763379d970b347f1ef7d37aa17ea0104db[m[33m ([m[1;31morigin/Najn[m[33m)[m
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Sat Dec 9 14:51:51 2023 +0100
+
+    visual improvement
+
+[33mcommit 94fbb84b173ab9d141476caea6c629318f729e3c[m
+Merge: a4e9d33 6b65280
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Sat Dec 2 23:19:00 2023 +0100
+
+    Merge pull request #16 from GlaryCZ/SQLdatabase
+    
+    More fixes
+
+[33mcommit 6b65280375d5eed2164163a8123f6921a31c1196[m[33m ([m[1;31morigin/SQLdatabase[m[33m)[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Sat Dec 2 23:14:13 2023 +0100
+
+    More fixes
+
+[33mcommit a4e9d330e1770b27435b1bb2382ecde0d58e8aa4[m
+Merge: 2b75104 a0e1b72
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Sat Dec 2 23:05:29 2023 +0100
+
+    Merge pull request #15 from GlaryCZ/SQLdatabase
+    
+    Fixed bugs from previous commit
+
+[33mcommit a0e1b7298ae42074f7b75b696f16ebed25707afc[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Sat Dec 2 23:02:55 2023 +0100
+
+    Fixed bugs drom previous commit
+
+[33mcommit 2b7510413566d8b0d6314bd626fb107bbddaaa52[m
+Merge: bceead0 6381f97
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Sat Dec 2 22:47:18 2023 +0100
+
+    Merge pull request #14 from GlaryCZ/SQLdatabase
+    
+    Added checks for required fields
+
+[33mcommit 6381f97fea28d176fefb4af5f01b8a8d956535a4[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Sat Dec 2 22:44:38 2023 +0100
+
+    Added checks for required fields
+
+[33mcommit bceead0084dd1c60193c017b385e7c6c04c62f6c[m
+Merge: 628034f 5b7b78f
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Sat Dec 2 22:22:22 2023 +0100
+
+    Merge pull request #13 from GlaryCZ/SQLdatabase
+    
+    Fixed another bug
+
+[33mcommit 5b7b78f437f691dde2b2224b69eab940891eb59e[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Sat Dec 2 22:19:24 2023 +0100
+
+    Fixed another bug
+
+[33mcommit 628034fcd56b221e02578f5bfac3966f0220b95f[m
+Merge: 0a3c268 123340d
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Sat Dec 2 22:12:45 2023 +0100
+
+    Merge pull request #12 from GlaryCZ/SQLdatabase
+    
+    API Bugfixes
+
+[33mcommit 123340d983d5ed508d3acfb05b1274de946832fc[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Sat Dec 2 22:10:11 2023 +0100
+
+    API Bugfixes
+
+[33mcommit 0a3c268c2c3cd6e706706f1a68dfe50f4276713c[m
+Merge: ba07466 e48e87c
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Sat Dec 2 18:34:58 2023 +0100
+
+    Merge pull request #11 from GlaryCZ/SQLdatabase
+    
+    SQL database
+
+[33mcommit e48e87c0d4a6f715bac65dd38896ac4b3b699cdb[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Fri Dec 1 17:17:28 2023 +0100
+
+    Nadpis vyhledávání učitelů
+
+[33mcommit 000734a612be161d3a2e0657633337d8e8fa2cc9[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Fri Dec 1 17:15:59 2023 +0100
+
+    Vyhledávání a seznam učitelů
+
+[33mcommit 6ef6c4b79ac510cad2dc93b8018f0d22530678f6[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Thu Nov 30 21:49:04 2023 +0100
+
+    Implementace databáze pro tagy
+
+[33mcommit 9e08bc48df2d0e7c35e9529573f47acb1b05965f[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Thu Nov 30 20:23:14 2023 +0100
+
+    API pro SQL databázi
+
+[33mcommit a8359d94be59da0df4a722e1ed4c5b146efc39c3[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Wed Nov 29 22:28:59 2023 +0100
+
+    SQL schema pro učitele a tagy
+
+[33mcommit ba07466130d01a0f90a81f3a40588c495a6122ef[m
+Merge: b6514b5 4e467c4
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Sun Nov 26 21:39:50 2023 +0100
+
+    Merge commit '4e467c4fe7271b99d37b4aa16aa4224d17de0068' into main
+
+[33mcommit 4e467c4fe7271b99d37b4aa16aa4224d17de0068[m
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Sun Nov 26 21:37:47 2023 +0100
+
+    visual improvement
+
+[33mcommit 9de03dab3e62d39c9272cb3e1deb2577447aa819[m
+Author: GlaryCZ <kmatl@email.cz>
+Date:   Sun Nov 19 16:41:24 2023 +0100
+
+    added css to /lecturer
+
+[33mcommit b6514b50ba90f6b90bb725f9b034e14a8d240426[m
+Merge: 8aab262 4b3871c
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Wed Nov 15 17:41:44 2023 +0100
+
+    Merge pull request #10 from GlaryCZ/phase2_prep
+    
+    Added base html template with navbar
+
+[33mcommit 4b3871c78d1b385d6ac78237a120bc9ee640663c[m[33m ([m[1;31morigin/phase2_prep[m[33m)[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Wed Nov 15 17:36:23 2023 +0100
+
+    Added base html template with navbar
+
+[33mcommit 8aab262f6fb7b887211961bdd536e58b364df66f[m
+Merge: 0f57b74 b99c972
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Wed Nov 15 17:02:03 2023 +0100
+
+    Merge pull request #9 from GlaryCZ/phase2_prep
+    
+    Added lecturer location to html
+
+[33mcommit b99c972711c00c46d5462f7a001be53b6d8dcb74[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Wed Nov 15 16:59:12 2023 +0100
+
+    Added lecturer location to html
+
+[33mcommit 0f57b747d44c969c1e4090c4fee811ca38980b9e[m
+Merge: db81b12 9c733cb
+Author: Tom-353 <149517440+Tom-353@users.noreply.github.com>
+Date:   Wed Nov 15 16:53:29 2023 +0100
+
+    Merge pull request #8 from GlaryCZ/phase2_prep
+    
+    Added lecturer profile picture
+
+[33mcommit 9c733cb8a4ac4fe61462fdb18e97d25f2b6a9382[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Wed Nov 15 16:45:24 2023 +0100
+
+    Added lecturer profile picture
+
+[33mcommit db81b1262be0db62dabc7e40d4f24e7b9cfdef4d[m
+Merge: 3a80f9e db2a060
+Author: GlaryCZ <136889108+GlaryCZ@users.noreply.github.com>
+Date:   Fri Nov 10 17:49:04 2023 +0100
+
+    Merge pull request #7 from GlaryCZ/phase2_prep
+    
+    Phase2 prep
+
+[33mcommit db2a0601e096dffb17e75af36aba82afd70cdf19[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Fri Nov 10 16:08:32 2023 +0100
+
+    Simple lecturer profile
+     + lecturer data in json format
+     + html for the lecturer page
+
+[33mcommit 0c4595dd757ff80f7eaaba302942bdcba355d6a8[m
+Author: Tomáš Řehák <tomrehak353@gmail.com>
+Date:   Thu Nov 9 21:08:36 2023 +0100
+
+    Preparations for phase 2.
+     + added /lecturer page
+     + added folder for html
+     - moved html to t
