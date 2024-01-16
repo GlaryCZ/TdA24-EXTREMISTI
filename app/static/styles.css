@@ -15,6 +15,8 @@ html {
 
 body {
     margin: 0px;
+    width: 100%;
+    height: 100%;
 }
 
 h1, h2, h3, h4 {
@@ -31,6 +33,7 @@ p {
     margin-left: 15px;
     text-indent: 20px;
     font-size: 20px;
+    margin-bottom: 20px;
 }
 
 ul {
@@ -41,6 +44,16 @@ ul {
 label {
     display: inline-block;
     margin-bottom: 10px;
+}
+
+footer {
+    height: 170px;
+    width: 100%;
+    background-color: #00384D;
+    display:inline-block;
+    margin-top: 50px;
+    bottom: 0;
+    position:relative;
 }
 
 #profile {
@@ -135,7 +148,17 @@ input[type="checkbox"]:hover {
 .profile-picture {
     margin-left: auto;
     margin-right: auto;
-    margin-top: 100px;
+    margin-top: 10px;
+    height: 300px;
+    width: 300px;
+    display: block;
+    border-radius: 30%;
+}
+
+.profile-picture-card {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
     height: 150px;
     width: 150px;
     display: block;
@@ -169,17 +192,18 @@ input[type="checkbox"]:hover {
     font-size: 20pt;
 }
 
+.space-div {
+    height: 20px;
+    margin-top: 50px;
+}
+
 
 #nav-bar {
     background-color: #00384D;
     margin: -10px 0px;
     width: 100%;
 }
-#footer {
-    width: 100%;
-    margin: -10px -10px;
-    color: #00384D;
-}
+
 #about-header {
     margin-left: 20px;
 }
@@ -188,6 +212,7 @@ input[type="checkbox"]:hover {
     float: left;
     width: 20%;
     margin-left: 1%;
+    margin-bottom: 10%;
     border: 5px #FECB2E;
     padding: 5px;
     box-shadow: 0 0 3px 5px #202020; /*  #74b2ca  */
