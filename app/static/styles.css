@@ -29,6 +29,12 @@ h3 {
     margin-bottom: 10px;
 }
 
+a, a:hover, a:focus, a:active {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
 p {
     margin-left: 15px;
     text-indent: 20px;

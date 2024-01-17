@@ -65,13 +65,13 @@
       <img class="profile-picture-card"
         src="{{lecturer.picture_url|e if lecturer.picture_url else url_for('static', filename='TdA_sipka_modrocerna.png')}}"
         alt="Profile picture">
-      <p class="lecturer-name">
+      <h1 class="lecturer-name">
         {% if lecturer.title_before %}{{lecturer.title_before|e}} {% endif %}
         {% if lecturer.first_name %}{{lecturer.first_name|e}} {% endif %}
         {% if lecturer.middle_name %}{{lecturer.middle_name|e}} {% endif %}
         {% if lecturer.last_name %}{{lecturer.last_name|e}} {% endif %}
         {% if lecturer.title_after %}{{lecturer.title_after|e}}{% endif %}
-      </p>
+      </h1>
       <p class="lecturer-claim"><i>{{lecturer.claim|e}}</i></p>
       {% if lecturer.price_per_hour %}<p>{{lecturer.price_per_hour|e}} kč za hodinu</p>{% endif %}
       {% if lecturer.location %}<p>{{ lecturer.location|e }}</p>{% endif %}
