@@ -1,7 +1,7 @@
 import os
 from uuid import uuid4 as make_uuid
 from flask import Flask, jsonify, render_template, json, request
-import db
+from . import db
 
 app = Flask(__name__)
 
