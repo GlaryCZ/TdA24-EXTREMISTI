@@ -27,7 +27,9 @@
     </div>
     {% block content %}{% endblock%}
     <footer>
+        <a href = "{{url_for('homepage')|e}}">
         <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" style="vertical-align:middle;margin:40px 40px;float: right;">
+        </a>
     </footer>
 </body>
 </html>
