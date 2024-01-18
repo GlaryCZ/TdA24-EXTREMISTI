@@ -253,6 +253,7 @@ input[type="checkbox"]:hover {
     height: 30px;
     width: 110px;
     font-size: 20pt;
+    margin-right: 20%;
 }
 
 #price-range-text {

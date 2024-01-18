@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <!-- <h1>Lecturer profile</h1> -->
+<title>TdA - {% if lecturer.first_name %}{{lecturer.first_name|e}} {% endif %} {% if lecturer.last_name %}{{lecturer.last_name|e}} {% endif %}</title>
 <div id="profile">
 <div class="lecturer-header">
   <h1 class="lecturer-name">
