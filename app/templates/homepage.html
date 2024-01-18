@@ -40,9 +40,9 @@
     <div id="slider-range"></div>
     <div>
       <input type="text" id="amount-min" placeholder="od" name="min_price" class="inp-price" {% if last_searched.min_price %}
-        value="{{last_searched.min_price}}" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
+        value="{{last_searched.min_price}}" {% else %} value="0" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
       <input type="text" id="amount-max" placeholder="do" name="max_price" class="inp-price" {% if last_searched.max_price %}
-        value="{{last_searched.max_price}}" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" /><br>
+        value="{{last_searched.max_price}}" {% else %} value="{{max_price}}" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" /><br>
     </div>
     <label id="location-text">Lokalita</label><br>
     <input type="text" name="location" placeholder="Město" list="seznam-lokaci" id="location-input-field" {% if last_searched.location %}
