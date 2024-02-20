@@ -15,8 +15,8 @@ try:
 except OSError:
     pass
 
-# with app.app_context():
-#     db.init_db()
+with app.app_context():
+    db.init_db()
 db.init_app(app)
     
 
@@ -90,7 +90,7 @@ def hash_password(password):
 @app.route('/', methods = ["GET"])
 def homepage():
     # TODO
-    return "HOMEPAGE"
+    return render_template("homepage.html")
 
 @app.route('/search', methods = ["GET", "POST"])
 def lecotrs_search_page():
