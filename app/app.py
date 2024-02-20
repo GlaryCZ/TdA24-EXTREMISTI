@@ -1,7 +1,7 @@
 import os
 from uuid import uuid4 as make_uuid
 from flask import Flask, jsonify, render_template, json, request
-from . import db
+import db
 
 app = Flask(__name__)
 
@@ -80,10 +80,11 @@ def password_is_correct(row, password):
     print(type(row))
     tec = row_to_lecturer(row)
     print(tec)
-    return tec['hashed_password'] == password
+    return tec['hashed_password'] == hash_password(password)
 
 def hash_password(password):
     # TODO
+    password = password + '_hashed'
     return password
 
 @app.route('/', methods = ["GET"])
