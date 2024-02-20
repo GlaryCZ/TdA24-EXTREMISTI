@@ -110,6 +110,13 @@ def lecturer_profile():
         lecturer = json.load(file)
     return render_template('lecturer.html', lecturer = lecturer)
 
+
+@app.route("/mainpage")
+def main_page():
+ 
+    return render_template('main-page.html')
+
+
 @app.route("/lecturer/<uuid>")
 def profile(uuid):
     row = get_lecturer_row(uuid)
