@@ -1,0 +1,12 @@
+#lecturer-login-wrapper {
+    color: black;
+    margin-top: 30vw;
+    margin-bottom: 30vw;
+}
+
+.login-input {
+    color: black;
+    display: block;
+    margin-left: 50%;
+    margin-right: 50%;
+}

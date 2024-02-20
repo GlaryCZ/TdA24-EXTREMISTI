@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lecturerpage-styles.css')}}">
+{% endblock%}
+{% block content %}
+
+<div id="lecturer-login-wrapper">
+<form method="post">
+    <input type="text" name="uuid" class="login-input">
+    <input type="password" name="password" class="login-input">
+</form>
+</div>
+{% endblock %}

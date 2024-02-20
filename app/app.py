@@ -92,6 +92,14 @@ def homepage():
     # TODO
     return render_template("homepage.html")
 
+@app.route('/login-lecturer', methods = ["GET", 'POST'])
+def lecturer_login():
+    if request.method == "GET":
+        return render_template("login-lecturer.html")
+    elif request.method == "POST":
+        # TODO
+        pass
+
 @app.route('/search', methods = ["GET", "POST"])
 def lecotrs_search_page():
     parameters = {}
