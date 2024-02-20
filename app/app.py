@@ -1,7 +1,7 @@
 import os
 from uuid import uuid4 as make_uuid
 from flask import Flask, jsonify, render_template, json, request
-from . import db
+import db
 
 app = Flask(__name__)
 
@@ -71,8 +71,12 @@ def get_tag(param, value):
     cursor.close()
     return row
 
-@app.route('/', methods = ["GET", "POST"])
+@app.route('/', methods = ["GET"])
 def homepage():
+    return "HOMEPAGE"
+
+@app.route('/search', methods = ["GET", "POST"])
+def lecotrs_search_page():
     parameters = {}
     my_tags = []
     data = {}
@@ -102,7 +106,7 @@ def homepage():
     cursor = db.get_db().execute("SELECT MAX(price_per_hour) FROM lecturers; ")
     max_price = cursor.fetchone()[0]
     cursor.close()
-    return render_template('homepage.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price)
+    return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price)
 
 @app.route("/lecturer")
 def lecturer_profile():
