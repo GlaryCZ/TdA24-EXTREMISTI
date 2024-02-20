@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS lecturers (
     UUID TEXT UNIQUE NOT NULL,
+    hashed_password TEXT NOT NULL,
     title_before TEXT,
     first_name TEXT,
     middle_name TEXT,

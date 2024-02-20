@@ -22,6 +22,10 @@ db.init_app(app)
 
 def lecturer_row_dict(json_string):
     data = json.loads(json_string)
+    print(data)
+    if 'password' in data:
+        data['hashed_password'] = hash_password(data['password'])
+        del data['password']
     lecturer = {}
     if "tags" in data:
         tag_list = []
@@ -71,8 +75,20 @@ def get_tag(param, value):
     cursor.close()
     return row
 
+def password_is_correct(row, password):
+    print(row)
+    print(type(row))
+    tec = row_to_lecturer(row)
+    print(tec)
+    return tec['hashed_password'] == password
+
+def hash_password(password):
+    # TODO
+    return password
+
 @app.route('/', methods = ["GET"])
 def homepage():
+    # TODO
     return "HOMEPAGE"
 
 @app.route('/search', methods = ["GET", "POST"])
@@ -121,7 +137,7 @@ def profile(uuid):
         return jsonify(code=404, message="User not found"), 404
     return render_template('lecturer.html', lecturer = row_to_lecturer(row))
 
-COLUMNS = ["uuid", "title_before", "first_name", "middle_name", "last_name", "title_after",
+COLUMNS = ["uuid", 'hashed_password', "title_before", "first_name", "middle_name", "last_name", "title_after",
            "picture_url", "location", "claim", "bio", "tags", "price_per_hour", "contact"]
 
 @app.route("/api")
@@ -146,6 +162,7 @@ def api_add_lecturer():
         not all((p in data["contact"] or data["contact"][p] is None) for p in ["telephone_numbers", "emails"])):
         return jsonify(code=404, message="Missing required parameters in contacts"), 404
     lecturer = lecturer_row_dict(request.data)
+    print(lecturer)
     new_uuid = str(make_uuid())
     lecturer["uuid"] = new_uuid
     values = ', '.join(['?' for _ in lecturer])
@@ -156,11 +173,13 @@ def api_add_lecturer():
     row = get_lecturer_row(new_uuid)
     return row_to_lecturer(row)
 
-@app.route("/api/lecturers/<uuid>", methods = ["GET", "PUT", "DELETE"])
-def api_lecturer(uuid):
+@app.route("/api/lecturers/<uuid>/<password>", methods = ["GET", "PUT", "DELETE"])
+def api_lecturer(uuid, password):
     row = get_lecturer_row(uuid)
     if row is None:
         return jsonify(code=404, message="User not found"), 404
+    if not password_is_correct(row, password):
+        return jsonify(code=401, message="Wrong password"), 401
     if request.method == "DELETE":
         db.get_db().execute("DELETE FROM lecturers WHERE uuid = ?", [uuid])
         db.get_db().commit()
