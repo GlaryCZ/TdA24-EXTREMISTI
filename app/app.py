@@ -76,10 +76,7 @@ def get_tag(param, value):
     return row
 
 def password_is_correct(row, password):
-    print(row)
-    print(type(row))
     tec = row_to_lecturer(row)
-    print(tec)
     return tec['hashed_password'] == hash_password(password)
 
 def hash_password(password):
@@ -97,8 +94,15 @@ def lecturer_login():
     if request.method == "GET":
         return render_template("login-lecturer.html")
     elif request.method == "POST":
-        # TODO
-        pass
+        data = dict(request.form)
+        row = get_lecturer_row(data['uuid'])
+        if row is None:
+            return jsonify(code=404, message="User not found"), 404
+        lecturer = row_to_lecturer(row)
+        print(lecturer['hashed_password'], hash_password(data['password']))
+        if lecturer['hashed_password'] != hash_password(data['password']):
+            return jsonify(code=401, message="Wrong password"), 401
+        return render_template('lecturer-logged-in.html')
 
 @app.route('/search', methods = ["GET", "POST"])
 def lecotrs_search_page():
