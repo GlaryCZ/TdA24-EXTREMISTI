@@ -207,6 +207,15 @@ def api_lecturer(uuid, password):
         db.get_db().commit()
         row = get_lecturer_row(uuid)
         return jsonify(row_to_lecturer(row))
+    
+@app.route("/order/<uuid>", methods = ["GET", "POST"])
+def order_page(uuid):
+    # TODO
+    return f'order page for lecturer {uuid}'
+    
+@app.route("/login/monthly-calendar", methods = ["GET"])
+def calendar_monthly():
+    return render_template('calendar-monthly.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
