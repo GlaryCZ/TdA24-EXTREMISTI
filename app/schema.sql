@@ -18,3 +18,13 @@ CREATE TABLE IF NOT EXISTS tags (
   UUID TEXT UNIQUE NOT NULL,
   "name" TEXT
 );
+CREATE TABLE IF NOT EXISTS orders (
+  UUID TEXT UNIQUE NOT NULL,
+  first_name TEXT,
+  last_name TEXT,
+  email TEXT,
+  phone_number TEXT,
+  tags JSON DEFAULT('[]'),
+  meet_type TEXT, --offline/online
+  date_and_time TEXT
+);

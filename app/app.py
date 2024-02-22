@@ -15,8 +15,8 @@ try:
 except OSError:
     pass
 
-with app.app_context():
-    db.init_db()
+# with app.app_context():
+#     db.init_db()
 db.init_app(app)
     
 
@@ -210,8 +210,10 @@ def api_lecturer(uuid, password):
     
 @app.route("/order/<uuid>", methods = ["GET", "POST"])
 def order_page(uuid):
-    # TODO
-    return f'order page for lecturer {uuid}'
+    row = get_lecturer_row(uuid)
+    if row is None:
+        return jsonify(code=404, message="User not found"), 404
+    return render_template('order-lecturer.html', lecturer = row_to_lecturer(row))
     
 @app.route("/login/monthly-calendar", methods = ["GET"])
 def calendar_monthly():

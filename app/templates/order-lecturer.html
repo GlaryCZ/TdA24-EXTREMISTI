@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block head %}
+<datalist id="meet-types">
+    <option value="online"></option>
+    <option value="prezenčně"></option>
+</datalist>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+{% endblock %}
+
+{% block content %}
+<form action="post">
+    <p>Objednáváte mentora s uuid: {{uuid}}</p>
+    <br>
+    <p>Křestní jméno: </p>
+    <input type="text" name="first-name">
+    <p>Příjmení: </p>
+    <input type="text" name="last-name">
+    <p>email: </p>
+    <input type="text" name="email">
+    <p>telefoní číslo: </p>
+    <input type="text" name="phone-number">
+    <p>Typ schůzky: </p>
+    <input type="text" name="meet-type" list="meet-types">
+    <p>Datum a cas: </p>
+    <input type="datetime-local" id="datepick">
+</form>
+<script>
+    config = {
+        enableTime: true,
+        dateFormat: "Y-m-d H",
+    }
+    flatpickr("#datepick", config);
+</script>
+{% endblock %}
