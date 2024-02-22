@@ -24,6 +24,11 @@
         <a href = "{{url_for('homepage')|e}}">
             <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" style="vertical-align:middle;margin:40px 40px">
         </a>
+        {%if session["uuid"]%}
+        <a href = "{{url_for('lecturer_private_profile')|e}}">
+             Logged in as {{session["my_lecturer"].first_name|e}} {{session["my_lecturer"].last_name|e}}
+        </a>
+        {%endif%}
     </div>
     {% block content %}{% endblock%}
     <footer>

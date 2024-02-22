@@ -1,13 +1,16 @@
 import os
 from uuid import uuid4 as make_uuid
-from flask import Flask, jsonify, render_template, json, request
-import db
+from hashlib import sha256
+from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
+from . import db
 
 app = Flask(__name__)
 
 app.config.from_mapping(
     DATABASE=os.path.join(app.instance_path, 'tourdeflask.sqlite'),
 )
+
+app.secret_key = "56675hdd6shd74setj7474jst7878s1jt"
 
 # ensure the instance folder exists
 try:
@@ -18,14 +21,60 @@ except OSError:
 with app.app_context():
     db.init_db()
 db.init_app(app)
+
+def get_login_info(uuid):
+    """Get hashed password from SQL databse."""
+    cursor = db.get_db().execute('SELECT hashed_password FROM lecturers_login WHERE UUID = ?', [uuid])
+    row = cursor.fetchone()
+    cursor.close()
+    return row
+
+def hash_password(password):
+    """Returns a hashed password"""
+    hashed_password = sha256(password.encode()).hexdigest()
+    return hashed_password
+
+def validate_login_info(uuid, password):
+    """Checks if uuid and password is correct.
     
+    Returns tuple(json error message, error code)
+
+    When login info is correct then error code = 200
+    """
+    row = get_login_info(uuid)
+    if row is None:
+        return jsonify(code=404, message="User not found"), 404
+    if row[0] != hash_password(password):
+        return jsonify(code=401, message="Wrong password"), 401
+    return jsonify(code=200, message="Login info correct"), 200
+
+def require_login(func):
+    """Decorator for checking login info before showing a page.
+
+    Returns an error page if there is noone logged in or the password is incorrect.
+    Otherewise shows the page normally.
+
+    Example:
+
+    @app.route("/private_page")\n
+    @require_login\n
+    def private_page:
+        ...
+    """
+    def new_f(*args, **kwargs):
+        if (not ('uuid' in session)) or session['uuid'] is None:
+            return jsonify(code=404, message="Not loggged in"), 404
+        res = validate_login_info(session['uuid'], session['password'])
+        if res[1] == 200:
+            return func(*args, **kwargs)
+        return res
+    new_f.__name__ = func.__name__
+    return new_f
 
 def lecturer_row_dict(json_string):
+    """Formats a lecturer json string into a row for saving in the SQL database."""
     data = json.loads(json_string)
     print(data)
-    if 'password' in data:
-        data['hashed_password'] = hash_password(data['password'])
-        del data['password']
     lecturer = {}
     if "tags" in data:
         tag_list = []
@@ -54,6 +103,7 @@ def lecturer_row_dict(json_string):
     return lecturer
 
 def row_to_lecturer(row):
+    """Formats a database row into lecturer json."""
     data = {COLUMNS[i] : row[i] for i in range(len(COLUMNS))}
     if "price_per_hour" in data and not data["price_per_hour"] is None:
         data["price_per_hour"] = int(data["price_per_hour"])
@@ -64,25 +114,24 @@ def row_to_lecturer(row):
     return data
 
 def get_lecturer_row(uuid):
+    """Get a lecturer row from SQL databse.
+
+    You may need to convert this row using row_to_lecturer(row).
+    """
     cursor = db.get_db().execute('select * from lecturers where uuid = ?', [uuid])
     row = cursor.fetchone()
     cursor.close()
     return row
 
 def get_tag(param, value):
+    """Get a tag from SQL databse.
+    
+    :param: can be only "name" or "uuid".
+    """
     cursor = db.get_db().execute('select * from tags where '+param+' = ?', [value])
     row = cursor.fetchone()
     cursor.close()
     return row
-
-def password_is_correct(row, password):
-    tec = row_to_lecturer(row)
-    return tec['hashed_password'] == hash_password(password)
-
-def hash_password(password):
-    # TODO
-    password = password + '_hashed'
-    return password
 
 @app.route('/', methods = ["GET"])
 def homepage():
@@ -93,16 +142,21 @@ def homepage():
 def lecturer_login():
     if request.method == "GET":
         return render_template("login-lecturer.html")
-    elif request.method == "POST":
-        data = dict(request.form)
-        row = get_lecturer_row(data['uuid'])
-        if row is None:
-            return jsonify(code=404, message="User not found"), 404
-        lecturer = row_to_lecturer(row)
-        print(lecturer['hashed_password'], hash_password(data['password']))
-        if lecturer['hashed_password'] != hash_password(data['password']):
-            return jsonify(code=401, message="Wrong password"), 401
-        return render_template('lecturer-logged-in.html')
+    data = dict(request.form)
+    session["uuid"] = None
+    session["password"] = None
+    session["my_lecturer"] = None
+    res = validate_login_info(data['uuid'], data['password'])
+    if res[1] != 200:
+        return res #TODO make this a popup
+    session["uuid"] = data['uuid']
+    session["password"] = data['password']
+    session["my_lecturer"] = row_to_lecturer(get_lecturer_row(data['uuid']))
+    return redirect(url_for("lecturer_private_profile"))
+
+ #TODO logout page
+
+ #TODO registration page
 
 @app.route('/search', methods = ["GET", "POST"])
 def lecotrs_search_page():
@@ -137,11 +191,10 @@ def lecotrs_search_page():
     cursor.close()
     return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price)
 
-@app.route("/lecturer")
-def lecturer_profile():
-    with open("app/lecturer.json", encoding="UTF8") as file:
-        lecturer = json.load(file)
-    return render_template('lecturer.html', lecturer = lecturer)
+@app.route("/my_profile")
+@require_login
+def lecturer_private_profile():
+    return render_template('lecturer-logged-in.html')
 
 @app.route("/lecturer/<uuid>")
 def profile(uuid):
@@ -150,12 +203,8 @@ def profile(uuid):
         return jsonify(code=404, message="User not found"), 404
     return render_template('lecturer.html', lecturer = row_to_lecturer(row))
 
-COLUMNS = ["uuid", 'hashed_password', "title_before", "first_name", "middle_name", "last_name", "title_after",
+COLUMNS = ["uuid", "title_before", "first_name", "middle_name", "last_name", "title_after",
            "picture_url", "location", "claim", "bio", "tags", "price_per_hour", "contact"]
-
-@app.route("/api")
-def api_request():
-    return jsonify(secret="The cake is a lie")
 
 @app.get("/api/lecturers")
 def api_get_all_lecturers():
@@ -167,6 +216,8 @@ def api_get_all_lecturers():
 @app.post("/api/lecturers")
 def api_add_lecturer():
     data = json.loads(request.data)
+    if not "password" in data or data["password"] is None:
+        return jsonify(code=404, message="Missing password"), 404
     if not "first_name" in data or data["first_name"] is None:
         return jsonify(code=404, message="Missing required parameters first_name"), 404
     if not "last_name" in data or data["last_name"] is None:
@@ -182,23 +233,32 @@ def api_add_lecturer():
     db.get_db().execute(
         'INSERT INTO lecturers (' + (', '.join([k for k in lecturer])) + ') VALUES ('+values+');',
         [lecturer[k] for k in lecturer])
+    db.get_db().execute(
+        'INSERT INTO lecturers_login (UUID, hashed_password) VALUES (?,?);',
+        [new_uuid, hash_password(data["password"])])
     db.get_db().commit()
     row = get_lecturer_row(new_uuid)
     return row_to_lecturer(row)
 
-@app.route("/api/lecturers/<uuid>/<password>", methods = ["GET", "PUT", "DELETE"])
-def api_lecturer(uuid, password):
+@app.get("/api/lecturers/<uuid>")
+def api_lecturer_get(uuid):
     row = get_lecturer_row(uuid)
     if row is None:
         return jsonify(code=404, message="User not found"), 404
-    if not password_is_correct(row, password):
-        return jsonify(code=401, message="Wrong password"), 401
+    return jsonify(row_to_lecturer(row))
+
+@app.route("/api/lecturers/<uuid>&<password>", methods = ["PUT", "DELETE"])
+def api_lecturer_edit(uuid, password):
+    res = validate_login_info(uuid, password)
+    if res[1] != 200:
+        return res
+    row = get_lecturer_row(uuid)
+    if row is None:
+        return jsonify(code=404, message="User not found"), 404
     if request.method == "DELETE":
         db.get_db().execute("DELETE FROM lecturers WHERE uuid = ?", [uuid])
         db.get_db().commit()
         return jsonify(code=204, message="Profile deleted"), 204
-    elif request.method == "GET":
-        return jsonify(row_to_lecturer(row))
     elif request.method == "PUT":
         lecturer = lecturer_row_dict(request.data)
         db.get_db().execute(
