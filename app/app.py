@@ -223,7 +223,7 @@ def api_add_lecturer():
     if not "last_name" in data or data["last_name"] is None:
         return jsonify(code=404, message="Missing required parameters last_name"), 404
     if ("contact" in data and (not data["contact"] is None) and
-        not all((p in data["contact"] or data["contact"][p] is None) for p in ["telephone_numbers", "emails"])):
+        any((not p in data["contact"] or data["contact"][p] is None) for p in ["telephone_numbers", "emails"])):
         return jsonify(code=404, message="Missing required parameters in contacts"), 404
     lecturer = lecturer_row_dict(request.data)
     print(lecturer)
