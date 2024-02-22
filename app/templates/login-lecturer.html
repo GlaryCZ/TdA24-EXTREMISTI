@@ -6,11 +6,12 @@
 
 <div id="lecturer-login-wrapper">
 <form method="post">
-    <p class="login-text">uuid:</p>
-    <input type="text" name="uuid" class="login-input">
+    <p class="login-text">username:</p>
+    <input type="text" name="username" class="login-input">
     <p class="login-text">heslo:</p>
     <input type="password" name="password" class="login-input">
     <input type="submit" value="přihlásit se" class="button" style="width: 380px;"><br>
 </form>
+<a href="{{url_for('lecturer_registration')}}">Create new account</a>
 </div>
 {% endblock %}

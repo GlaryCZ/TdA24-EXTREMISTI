@@ -22,13 +22,6 @@ except OSError:
 #     db.init_db()
 db.init_app(app)
 
-def get_login_info(uuid):
-    """Get hashed password from SQL databse."""
-    cursor = db.get_db().execute('SELECT hashed_password FROM lecturers_login WHERE UUID = ?', [uuid])
-    row = cursor.fetchone()
-    cursor.close()
-    return row
-
 def hash_password(password):
     """Returns a hashed password"""
     hashed_password = sha256(password.encode()).hexdigest()
@@ -41,7 +34,9 @@ def validate_login_info(uuid, password):
 
     When login info is correct then error code = 200
     """
-    row = get_login_info(uuid)
+    cursor = db.get_db().execute('SELECT hashed_password FROM lecturers_login WHERE UUID = ?', [uuid])
+    row = cursor.fetchone()
+    cursor.close()
     if row is None:
         return jsonify(code=404, message="User not found"), 404
     if row[0] != hash_password(password):
@@ -74,7 +69,6 @@ def require_login(func):
 def lecturer_row_dict(json_string):
     """Formats a lecturer json string into a row for saving in the SQL database."""
     data = json.loads(json_string)
-    print(data)
     lecturer = {}
     if "tags" in data:
         tag_list = []
@@ -143,20 +137,55 @@ def lecturer_login():
     if request.method == "GET":
         return render_template("login-lecturer.html")
     data = dict(request.form)
+    cursor = db.get_db().execute('SELECT uuid FROM lecturers_login WHERE username = ?', [data['username']])
+    row = cursor.fetchone()
+    cursor.close()
+    if row is None:
+        return jsonify(code=404, message="Username not found"), 404 #TODO make this a popup
+    uuid = row[0]
     session["uuid"] = None
     session["password"] = None
     session["my_lecturer"] = None
-    res = validate_login_info(data['uuid'], data['password'])
+    res = validate_login_info(uuid, data['password'])
     if res[1] != 200:
         return res #TODO make this a popup
-    session["uuid"] = data['uuid']
+    session["uuid"] = uuid
     session["password"] = data['password']
-    session["my_lecturer"] = row_to_lecturer(get_lecturer_row(data['uuid']))
+    session["my_lecturer"] = row_to_lecturer(get_lecturer_row(uuid))
     return redirect(url_for("lecturer_private_profile"))
 
- #TODO logout page
+@app.route('/logout-lecturer', methods = ["GET"])
+def lecturer_logout():
+    session["uuid"] = None
+    session["password"] = None
+    session["my_lecturer"] = None
+    return redirect(url_for("homepage"))
 
- #TODO registration page
+@app.route('/register-lecturer', methods = ["GET", 'POST'])
+def lecturer_registration():
+    if request.method == "GET":
+        return render_template("register-lecturer.html")
+    cursor = db.get_db().execute('SELECT username FROM lecturers_login')
+    rows = cursor.fetchall()
+    cursor.close()
+    claimed_names = [i[0] for i in rows]
+    data = dict(request.form)
+    if any(data[i] == "" for i in data):
+        return jsonify(code=404, message="Missing required field"), 404 #TODO make this a popup
+    if data['username'] in claimed_names:
+        return jsonify(code=404, message="Username already used"), 404 #TODO make this a popup
+    new_uuid = str(make_uuid())
+    db.get_db().execute(
+        'INSERT INTO lecturers (uuid, first_name, last_name, contact) VALUES (?,?,?,?);',
+        [new_uuid, data["first_name"], data["last_name"], '{"telephone_numbers":["'+data["telephone_number"]+'"],"emails":["'+data["email"]+'"]}'])
+    db.get_db().execute(
+        'INSERT INTO lecturers_login (UUID, hashed_password, username) VALUES (?,?,?);',
+        [new_uuid, hash_password(data["password"]), data["username"]])
+    db.get_db().commit()
+    session["uuid"] = new_uuid
+    session["password"] = data['password']
+    session["my_lecturer"] = row_to_lecturer(get_lecturer_row(new_uuid))
+    return redirect(url_for("lecturer_private_profile"))
 
 @app.route('/search', methods = ["GET", "POST"])
 def lecotrs_search_page():
@@ -218,6 +247,8 @@ def api_add_lecturer():
     data = json.loads(request.data)
     if not "password" in data or data["password"] is None:
         return jsonify(code=404, message="Missing password"), 404
+    if not "username" in data or data["username"] is None:
+        return jsonify(code=404, message="Missing username"), 404
     if not "first_name" in data or data["first_name"] is None:
         return jsonify(code=404, message="Missing required parameters first_name"), 404
     if not "last_name" in data or data["last_name"] is None:
@@ -226,7 +257,6 @@ def api_add_lecturer():
         any((not p in data["contact"] or data["contact"][p] is None) for p in ["telephone_numbers", "emails"])):
         return jsonify(code=404, message="Missing required parameters in contacts"), 404
     lecturer = lecturer_row_dict(request.data)
-    print(lecturer)
     new_uuid = str(make_uuid())
     lecturer["uuid"] = new_uuid
     values = ', '.join(['?' for _ in lecturer])
@@ -234,8 +264,8 @@ def api_add_lecturer():
         'INSERT INTO lecturers (' + (', '.join([k for k in lecturer])) + ') VALUES ('+values+');',
         [lecturer[k] for k in lecturer])
     db.get_db().execute(
-        'INSERT INTO lecturers_login (UUID, hashed_password) VALUES (?,?);',
-        [new_uuid, hash_password(data["password"])])
+        'INSERT INTO lecturers_login (UUID, hashed_password, username) VALUES (?,?,?);',
+        [new_uuid, hash_password(data["password"]), data["username"]])
     db.get_db().commit()
     row = get_lecturer_row(new_uuid)
     return row_to_lecturer(row)

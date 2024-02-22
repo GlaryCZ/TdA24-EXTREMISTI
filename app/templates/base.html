@@ -27,6 +27,9 @@
         {%if session["uuid"]%}
         <a href = "{{url_for('lecturer_private_profile')|e}}">
              Logged in as {{session["my_lecturer"].first_name|e}} {{session["my_lecturer"].last_name|e}}
+        </a>  
+        <a href = "{{url_for('lecturer_logout')|e}}">
+             Logout
         </a>
         {%endif%}
     </div>
