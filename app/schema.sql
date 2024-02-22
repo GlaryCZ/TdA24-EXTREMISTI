@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS lecturers (
     UUID TEXT UNIQUE NOT NULL,
-    hashed_password TEXT NOT NULL,
     title_before TEXT,
     first_name TEXT,
     middle_name TEXT,
@@ -14,6 +13,11 @@ CREATE TABLE IF NOT EXISTS lecturers (
     price_per_hour INTEGER,
     contact JSON
 );
+CREATE TABLE IF NOT EXISTS lecturers_login (
+    UUID TEXT UNIQUE NOT NULL,
+    hashed_password TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS tags (
   UUID TEXT UNIQUE NOT NULL,
   "name" TEXT
