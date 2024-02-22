@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS lecturers (
 );
 CREATE TABLE IF NOT EXISTS lecturers_login (
     UUID TEXT UNIQUE NOT NULL,
+    username TEXT UNIQUE NOT NULL,
     hashed_password TEXT NOT NULL
 );
 

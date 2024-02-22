@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lecturerpage-styles.css')}}">
+{% endblock%}
+{% block content %}
+
+<div id="lecturer-login-wrapper">
+<form method="post">
+    <p class="login-text">username:</p>
+    <input type="text" name="username" class="login-input">
+    <p class="login-text">heslo:</p>
+    <input type="password" name="password" class="login-input">
+    <p class="login-text">first name:</p>
+    <input type="text" name="first_name" class="login-input">
+    <p class="login-text">last name:</p>
+    <input type="text" name="last_name" class="login-input">
+    <p class="login-text">email:</p>
+    <input type="email" name="email" class="login-input">
+    <p class="login-text">telephone number:</p>
+    <input type="tel" name="telephone_number" class="login-input">
+    <input type="submit" value="registrovat se" class="button" style="width: 380px;"><br>
+</form>
+</div>
+{% endblock %}
