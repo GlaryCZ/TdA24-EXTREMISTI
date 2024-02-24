@@ -30,8 +30,22 @@
 <script>
     config = {
         enableTime: true,
-        dateFormat: "Y-m-d H",
+        dateFormat: "d-m-Y H",
+        time_24hr: true,
+        minDate: "today"
     }
     flatpickr("#datepick", config);
+  const flatpickrTimeElement = flatpickrElement.timeContainer; // <div class="flatpickr-time" tabindex="-1">...</div>
+  const [hoursInputWrapper, minutesInputWrapper] = flatpickrTimeElement.getElementsByClassName('numInputWrapper');
+
+  // Set the width of the Hours wrapper to 100%
+  hoursInputWrapper.style.width = '100%';
+
+  // Remove the `:` separator
+  flatpickrTimeElement.querySelector('.flatpickr-time-separator').remove();
+
+  // Completely remove the minutes wrapper and input
+  minutesInputWrapper.remove();
+    
 </script>
 {% endblock %}
