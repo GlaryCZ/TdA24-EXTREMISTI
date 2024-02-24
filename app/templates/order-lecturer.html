@@ -27,6 +27,7 @@
     <p>Datum a cas: </p>
     <input type="datetime-local" id="datepick">
 </form>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/cs.js"></script>
 <script>
     config = {
         enableTime: true,
@@ -34,8 +35,9 @@
         time_24hr: true,
         minDate: new Date().fp_incr(3),
         minuteIncrement: 60,
-        altFormat: "j, F, Y",
-        altInput: true
+        altFormat: "j. F, Y",
+        altInput: true,
+        "locale": 'cs'
     }
     flatpickr("#datepick", config);
 
