@@ -12,7 +12,7 @@
 
 {% block content %}
 <form action="post">
-    <p>Objednáváte mentora s uuid: {{uuid}}</p>
+    <p>Objednáváte mentora {{lecturer.first_name}} {{lecturer.last_name}}</p>
     <br>
     <p>Křestní jméno: </p>
     <input type="text" name="first-name">
@@ -33,7 +33,9 @@
         dateFormat: "d-m-Y H",
         time_24hr: true,
         minDate: new Date().fp_incr(3),
-        minuteIncrement: 60
+        minuteIncrement: 60,
+        altFormat: "j, F, Y",
+        altInput: true
     }
     flatpickr("#datepick", config);
 
