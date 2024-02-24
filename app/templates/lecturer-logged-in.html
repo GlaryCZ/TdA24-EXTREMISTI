@@ -3,6 +3,21 @@
 
 {% endblock %}
 {% block content %}
+{% for order in orders %}
+<div id="profile">
+    <div class="space-div"></div>
+    <h1 class="lecturer-name">
+    {{order[1]}} {{order[2]}}
+    </h1>
+    <p>email: {{order[3]}}</p>
+    <p>datum a cas: {{order[7]}}</p>
+    <p>telefon: {{order[4]}}</p>
+    <p>typ schůzky: {{order[6]}}</p>
+    <p>tagy: {{order[5]}}</p>
+    <p>zpráva od klienta: {{order[8]}}</p>
+
+</div>
+{% endfor %}
 <iframe src="https://calendar.google.com/calendar/embed?src=xmatl00%40jaroska.cz&ctz=Europe%2FPrague" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
 
 {% endblock%}

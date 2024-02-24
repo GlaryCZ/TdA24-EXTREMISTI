@@ -24,16 +24,22 @@
         <input type="text" name="last-name" class="login-input">
         <p class="login-text">email: </p>
         <input type="text" name="email" class="login-input">
-        <p class="login-text">telefoní číslo: </p>
+        <p class="login-text">telefonní číslo: </p>
         <input type="text" name="phone-number" class="login-input">
         <p class="login-text">Typ schůzky: </p>
         <select name="meet-type" id="meet-type" class="login-input">
             <option value="online">online</option>
             <option value="prezenčně">presenčně</option>
         </select>
-        <!-- <input type="text" name="meet-type" list="meet-types" class="login-input"> -->
         <p class="login-text">Datum a čas začátku schůzky: </p>
         <input type="datetime-local" id="datepick" class="login-input" name="date">
+        <p class="login-text">Tagy ke schůzce: </p> <br>
+        {% for tag in lecturer.tags %}
+        <label for="{{tag.uuid}}" class="checkbox-label">
+            <a class="tag">{{tag.name|e}}</a>
+            <input type="checkbox" class="tag-checkbox" id="{{tag.uuid}}" name="{{tag.uuid}}">
+          </label><br>
+        {% endfor %}
         <p class="login-text">Zpráva pro mentora: </p>
         <textarea class="login-input" name="message" rows="4" cols="50" style="height: 100px;"></textarea>
 

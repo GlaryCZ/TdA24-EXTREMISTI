@@ -1,8 +1,9 @@
 import os
+from typing import List
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-from . import db
+import db
 
 app = Flask(__name__)
 
@@ -46,7 +47,7 @@ def validate_login_info(uuid, password):
 def require_login(func):
     """Decorator for checking login info before showing a page.
 
-    Returns an error page if there is noone logged in or the password is incorrect.
+    Returns an error page if there is no one logged in or the password is incorrect.
     Otherewise shows the page normally.
 
     Example:
@@ -126,6 +127,18 @@ def get_tag(param, value):
     row = cursor.fetchone()
     cursor.close()
     return row
+
+@require_login
+def get_orders_for_lecturer():
+    '''Returns list of lists with info of each order of currently logged in user'''
+    cursor = db.get_db().execute(
+        'SELECT * FROM orders WHERE uuid = ?',
+        [session['uuid']]
+    )
+    rows = cursor.fetchall()
+    cursor.close()
+    all_orders = [[r for r in row] for row in rows]
+    return all_orders
 
 @app.route('/', methods = ["GET"])
 def homepage():
@@ -223,7 +236,8 @@ def lecotrs_search_page():
 @app.route("/my_profile")
 @require_login
 def lecturer_private_profile():
-    return render_template('lecturer-logged-in.html')
+    orders_info = get_orders_for_lecturer()
+    return render_template('lecturer-logged-in.html', orders=orders_info)
 
 @app.route("/lecturer/<uuid>")
 def profile(uuid):
@@ -304,26 +318,23 @@ def order_page(uuid):
         row = get_lecturer_row(uuid)
         if row is None:
             return jsonify(code=404, message="User not found"), 404
-        return render_template('order-lecturer.html', lecturer = row_to_lecturer(row))
+        lecturer = row_to_lecturer(row)
+        # print(lecturer.tag)
+        return render_template('order-lecturer.html', lecturer = lecturer)
     else:
         data = dict(request.form)
+        my_tags = [t for t in data if not t in ['first-name', 'last-name', 'email', 'phone-number', 'meet-type', 'date', 'message']]
         # return f'{data}'
         new_dict = {key: val for key, val in data.items() if key != 'message'}
         if any(new_dict[i] == "" for i in new_dict):
             return jsonify(code=404, message="Missing required field"), 404 #TODO make this a popup
         db.get_db().execute(
             'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time) VALUES (?,?,?,?,?,?,?,?);',
-            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], '', data['meet-type'], data['date']]
+            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], str(my_tags), data['meet-type'], data['date']]
         )
         db.get_db().commit()
 
-        cursor = db.get_db().execute(
-            'SELECT * FROM orders WHERE uuid = ?',
-            [uuid]
-            )
-        rows = cursor.fetchall()
-        cursor.close()
-        tags = [[r for r in row] for row in rows]
+
         row = get_lecturer_row(uuid)
         return render_template('order-confirmation.html', lecturer = row_to_lecturer(row), email=data['email'])
     
