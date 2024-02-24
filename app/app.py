@@ -2,7 +2,7 @@ import os
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-import db
+from . import db
 
 app = Flask(__name__)
 
@@ -311,18 +311,21 @@ def order_page(uuid):
         new_dict = {key: val for key, val in data.items() if key != 'message'}
         if any(new_dict[i] == "" for i in new_dict):
             return jsonify(code=404, message="Missing required field"), 404 #TODO make this a popup
-        new_uuid = str(make_uuid())
         db.get_db().execute(
             'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time) VALUES (?,?,?,?,?,?,?,?);',
             [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], '', data['meet-type'], data['date']]
         )
         db.get_db().commit()
 
-        cursor = db.get_db().execute('SELECT * FROM orders')
+        cursor = db.get_db().execute(
+            'SELECT * FROM orders WHERE uuid = ?',
+            [uuid]
+            )
         rows = cursor.fetchall()
         cursor.close()
-        tags = [[r for r in row]for row in rows]
-        return f'{tags}'
+        tags = [[r for r in row] for row in rows]
+        row = get_lecturer_row(uuid)
+        return render_template('order-confirmation.html', lecturer = row_to_lecturer(row), email=data['email'])
     
 
     

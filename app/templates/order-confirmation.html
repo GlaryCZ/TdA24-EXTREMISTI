@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block head %}
+<style>
+    h3 {
+        text-align: center;
+        font-size: 3vw;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<h3>Vaši žádost o mentora {{lecturer.first_name}} {{lecturer.last_name}} jsme předali ke zpracování.</h3>
+<h3 style="margin-bottom: 20vw;">Až vám mentor objednávku potvrdí, přijde vám informační email na adresu {{email}}</h3>
+{% endblock %}
