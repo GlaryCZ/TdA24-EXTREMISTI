@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS tags (
   "name" TEXT
 );
 CREATE TABLE IF NOT EXISTS orders (
-  username TEXT UNIQUE NOT NULL,
+  uuid TEXT UNIQUE NOT NULL,
   first_name TEXT,
   last_name TEXT,
   email TEXT,

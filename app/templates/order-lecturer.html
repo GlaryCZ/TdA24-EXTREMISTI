@@ -5,29 +5,44 @@
     <option value="online"></option>
     <option value="prezenčně"></option>
 </datalist>
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='lecturerpage-styles.css')}}">
+<script src="https://npmcdn.com/flatpickr/dist/l10n/cs.js"></script>
 
 {% endblock %}
 
 {% block content %}
-<form action="post">
-    <p>Objednáváte mentora {{lecturer.first_name}} {{lecturer.last_name}}</p>
-    <br>
-    <p>Křestní jméno: </p>
-    <input type="text" name="first-name">
-    <p>Příjmení: </p>
-    <input type="text" name="last-name">
-    <p>email: </p>
-    <input type="text" name="email">
-    <p>telefoní číslo: </p>
-    <input type="text" name="phone-number">
-    <p>Typ schůzky: </p>
-    <input type="text" name="meet-type" list="meet-types">
-    <p>Datum a cas: </p>
-    <input type="datetime-local" id="datepick">
-</form>
-<script src="https://npmcdn.com/flatpickr/dist/l10n/cs.js"></script>
+<div id="lecturer-login-wrapper">
+    <form method="post">
+        <p class="login-text">Objednáváte mentora {{lecturer.first_name}} {{lecturer.last_name}}</p>
+        <br>
+        <p class="login-text">Křestní jméno: </p>
+        <input type="text" name="first-name" class="login-input">
+        <p class="login-text">Příjmení: </p>
+        <input type="text" name="last-name" class="login-input">
+        <p class="login-text">email: </p>
+        <input type="text" name="email" class="login-input">
+        <p class="login-text">telefoní číslo: </p>
+        <input type="text" name="phone-number" class="login-input">
+        <p class="login-text">Typ schůzky: </p>
+        <select name="meet-type" id="meet-type" class="login-input">
+            <option value="online">online</option>
+            <option value="prezenčně">presenčně</option>
+        </select>
+        <!-- <input type="text" name="meet-type" list="meet-types" class="login-input"> -->
+        <p class="login-text">Datum a čas začátku schůzky: </p>
+        <input type="datetime-local" id="datepick" class="login-input" name="date">
+        <p class="login-text">Zpráva pro mentora: </p>
+        <textarea class="login-input" name="message" rows="4" cols="50" style="height: 100px;"></textarea>
+
+        <input type="submit" value="objednat" class="button" style="width: 380px;"><br>
+    </form>
+    </div>
+
+
+
 <script>
     config = {
         enableTime: true,
@@ -35,9 +50,11 @@
         time_24hr: true,
         minDate: new Date().fp_incr(3),
         minuteIncrement: 60,
-        altFormat: "j. F, Y",
+        altFormat: "j. F, H:00",
         altInput: true,
-        "locale": 'cs'
+        "locale": 'cs',
+        minTime: "8:00",
+        maxTime: "19:00",
     }
     flatpickr("#datepick", config);
 

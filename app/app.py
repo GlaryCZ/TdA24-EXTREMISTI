@@ -300,10 +300,31 @@ def api_lecturer_edit(uuid, password):
     
 @app.route("/order/<uuid>", methods = ["GET", "POST"])
 def order_page(uuid):
-    row = get_lecturer_row(uuid)
-    if row is None:
-        return jsonify(code=404, message="User not found"), 404
-    return render_template('order-lecturer.html', lecturer = row_to_lecturer(row))
+    if request.method == "GET":
+        row = get_lecturer_row(uuid)
+        if row is None:
+            return jsonify(code=404, message="User not found"), 404
+        return render_template('order-lecturer.html', lecturer = row_to_lecturer(row))
+    else:
+        data = dict(request.form)
+        # return f'{data}'
+        new_dict = {key: val for key, val in data.items() if key != 'message'}
+        if any(new_dict[i] == "" for i in new_dict):
+            return jsonify(code=404, message="Missing required field"), 404 #TODO make this a popup
+        new_uuid = str(make_uuid())
+        db.get_db().execute(
+            'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time) VALUES (?,?,?,?,?,?,?,?);',
+            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], '', data['meet-type'], data['date']]
+        )
+        db.get_db().commit()
+
+        cursor = db.get_db().execute('SELECT * FROM orders')
+        rows = cursor.fetchall()
+        cursor.close()
+        tags = [[r for r in row]for row in rows]
+        return f'{tags}'
+    
+
     
 @app.route("/login/monthly-calendar", methods = ["GET"])
 def calendar_monthly():
