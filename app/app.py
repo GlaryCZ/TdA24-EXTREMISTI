@@ -3,7 +3,9 @@ from typing import List
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
+from authlib.integrations.flask_client import OAuth
 import db
+import auto_maily
 
 app = Flask(__name__)
 
@@ -12,6 +14,23 @@ app.config.from_mapping(
 )
 
 app.secret_key = "56675hdd6shd74setj7474jst7878s1jt"
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id='661793370921-cih2ksvgggmhbrvobt0l6lua4l483orp.apps.googleusercontent.com',
+    client_secret='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',
+    # access_token_url='https://accounts.google.com/o/oauth2/token',
+    # access_token_params=None,
+    # authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    userinfo_endpoint='https://openidconnect.googleapis.com/v3/userinfo',  # This is only needed if using openId to fetch user info
+    client_kwargs={'scope': 'email profile openid https://www.googleapis.com/auth/calendar', 'access_type': 'offline'},
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    access_type='offline',
+    prompt='consent',
+    approval_prompt='force'
+)
 
 # ensure the instance folder exists
 try:
@@ -146,6 +165,28 @@ def homepage():
     return render_template("homepage.html")
 '''
 
+@app.route('/my_profile/caledar_auth')
+def calendar_login():
+    google = oauth.create_client('google')  # create the google oauth client
+    redirect_uri = url_for('authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route('/my_profile/authorize')
+def authorize():
+    google = oauth.create_client('google')  # create the google oauth client
+    token = google.authorize_access_token(access_type='offline')  # Access token from google (needed to get user info)
+    print(token)
+    # print(token['refresh_token'])
+    resp = google.get('userinfo', token=token)  # userinfo contains stuff u specificed in the scrope
+    user_info = resp.json()
+    user = oauth.google.userinfo()  # uses openid endpoint to fetch user info
+    # Here you use the profile/user data that you got and query your database find/register the user
+    # and set ur own data in the session not the profile from google
+    session['profile'] = user_info
+    session['access_token'] = token['access_token']
+    session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
+    return redirect('/my_profile')
+
 @app.route('/login', methods = ["GET", 'POST'])
 def lecturer_login():
     if request.method == "GET":
@@ -238,7 +279,10 @@ def lecotrs_search_page():
 @require_login
 def lecturer_private_profile():
     if request.method == 'POST':
-        return dict(request.form)
+        
+        data = dict(request.form) # TODO
+        auto_maily.mail(data['submit'], data['email'], data['message'])
+        return data
     orders_info = get_orders_for_lecturer()
     for order in orders_info:
         order[5] = order[5].strip("][").replace("'", '').split(', ')
