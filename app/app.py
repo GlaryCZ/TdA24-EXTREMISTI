@@ -3,7 +3,7 @@ from typing import List
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-from . import db
+import db
 
 app = Flask(__name__)
 
