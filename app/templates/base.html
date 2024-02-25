@@ -17,14 +17,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; 
+  img-src https://* 'self'; 
+  child-src 'none';
+  script-src code.jquery.com 'self' https://cdn.jsdelivr.net https://npmcdn.com;
+  font-src https://fonts.gstatic.com 'self';
+  style-src 'self' https://npmcdn.com https://cdn.jsdelivr.net 'unsafe-inline';
+  frame-src https://calendar.google.com/;
+  "/>
     {% block head %}
     {% endblock%}
 </head>
 <body>
     <div id="nav-bar">
         <a href = "{{url_for('lecotrs_search_page')|e}}">
-            <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" style="vertical-align:middle;margin:40px 40px">
+            <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" id="top-img">
         </a>
         {%if session["uuid"]%}
         <a href = "{{url_for('lecturer_private_profile')|e}}">
@@ -38,7 +47,7 @@
     {% block content %}{% endblock%}
     <footer>
         <a href = "{{url_for('lecotrs_search_page')|e}}">
-        <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" style="vertical-align:middle;margin:40px 40px;float: right;">
+        <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" id="footer-img">
         </a>
     </footer>
 </body>

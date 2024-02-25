@@ -5,22 +5,9 @@
 {% extends "base.html" %}
 {% block head%}
 <!-- jquerry -->
+<script src="{{ url_for('static', filename='slider.js')}}"></script>
 
 
-<script>
-  $(function () {
-    $("#slider-range").slider({
-      range: true,
-      min: 0,
-      max: "{{max_price}}",
-    values: [$('#amount-min').val(), $('#amount-max').val()],
-    slide: function (event, ui) {
-      $("#amount-min").val(ui.values[0]);
-      $("#amount-max").val(ui.values[1]);
-    }
-    });
-  } );
-</script>
 <title>Teacher digital Agency</title>
 <!-- jquerry -->
 {% endblock%}

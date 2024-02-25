@@ -72,6 +72,17 @@ div {
     padding-bottom: 1px;
 }
 
+#footer-img {
+    vertical-align:middle;
+    margin:40px 40px;
+    float: right;
+}
+
+#top-img {
+    vertical-align:middle;
+    margin:40px 40px
+}
+
 
 .inp-price {
     float: left;

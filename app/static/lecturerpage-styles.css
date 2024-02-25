@@ -70,3 +70,11 @@
 .flatpickr-minute {
     pointer-events:none;
 }
+
+#tall {
+  height: 150px;
+}
+
+#width380 {
+  width: 380px;
+}
