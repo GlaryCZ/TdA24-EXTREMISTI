@@ -31,5 +31,6 @@ CREATE TABLE IF NOT EXISTS orders (
   phone_number TEXT,
   tags JSON DEFAULT('[]'),
   meet_type TEXT, --offline/online
-  date_and_time TEXT
+  date_and_time TEXT,
+  message_for_lecturer TEXT
 );

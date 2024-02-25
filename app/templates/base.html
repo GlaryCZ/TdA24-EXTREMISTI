@@ -17,12 +17,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     {% block head %}
     {% endblock%}
 </head>
 <body>
     <div id="nav-bar">
-        <a href = "{{url_for('homepage')|e}}">
+        <a href = "{{url_for('lecotrs_search_page')|e}}">
             <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" style="vertical-align:middle;margin:40px 40px">
         </a>
         {%if session["uuid"]%}
@@ -36,7 +37,7 @@
     </div>
     {% block content %}{% endblock%}
     <footer>
-        <a href = "{{url_for('homepage')|e}}">
+        <a href = "{{url_for('lecotrs_search_page')|e}}">
         <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" style="vertical-align:middle;margin:40px 40px;float: right;">
         </a>
     </footer>

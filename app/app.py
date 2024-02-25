@@ -3,7 +3,7 @@ from typing import List
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-import db
+from . import db
 
 app = Flask(__name__)
 
@@ -139,13 +139,14 @@ def get_orders_for_lecturer():
     cursor.close()
     all_orders = [[r for r in row] for row in rows]
     return all_orders
-
+'''
 @app.route('/', methods = ["GET"])
 def homepage():
     # TODO
     return render_template("homepage.html")
+'''
 
-@app.route('/login-lecturer', methods = ["GET", 'POST'])
+@app.route('/login', methods = ["GET", 'POST'])
 def lecturer_login():
     if request.method == "GET":
         return render_template("login-lecturer.html")
@@ -172,7 +173,7 @@ def lecturer_logout():
     session["uuid"] = None
     session["password"] = None
     session["my_lecturer"] = None
-    return redirect(url_for("homepage"))
+    return redirect(url_for("lecotrs_search_page"))
 
 @app.route('/register-lecturer', methods = ["GET", 'POST'])
 def lecturer_registration():
@@ -200,7 +201,7 @@ def lecturer_registration():
     session["my_lecturer"] = row_to_lecturer(get_lecturer_row(new_uuid))
     return redirect(url_for("lecturer_private_profile"))
 
-@app.route('/search', methods = ["GET", "POST"])
+@app.route('/', methods = ["GET", "POST"])
 def lecotrs_search_page():
     parameters = {}
     my_tags = []
@@ -233,10 +234,14 @@ def lecotrs_search_page():
     cursor.close()
     return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price)
 
-@app.route("/my_profile")
+@app.route("/my_profile", methods=['GET', 'POST'])
 @require_login
 def lecturer_private_profile():
+    if request.method == 'POST':
+        return dict(request.form)
     orders_info = get_orders_for_lecturer()
+    for order in orders_info:
+        order[5] = order[5].strip("][").replace("'", '').split(', ')
     return render_template('lecturer-logged-in.html', orders=orders_info)
 
 @app.route("/lecturer/<uuid>")
@@ -323,14 +328,15 @@ def order_page(uuid):
         return render_template('order-lecturer.html', lecturer = lecturer)
     else:
         data = dict(request.form)
-        my_tags = [t for t in data if not t in ['first-name', 'last-name', 'email', 'phone-number', 'meet-type', 'date', 'message']]
+        my_tags_uuids = [t for t in data if not t in ['first-name', 'last-name', 'email', 'phone-number', 'meet-type', 'date', 'message']]
+        my_tags = [get_tag("uuid", id)[1] for id in my_tags_uuids]
         # return f'{data}'
         new_dict = {key: val for key, val in data.items() if key != 'message'}
         if any(new_dict[i] == "" for i in new_dict):
             return jsonify(code=404, message="Missing required field"), 404 #TODO make this a popup
         db.get_db().execute(
-            'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time) VALUES (?,?,?,?,?,?,?,?);',
-            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], str(my_tags), data['meet-type'], data['date']]
+            'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time, message_for_lecturer) VALUES (?,?,?,?,?,?,?,?,?);',
+            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], str(my_tags), data['meet-type'], data['date'], data['message']]
         )
         db.get_db().commit()
 
