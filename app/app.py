@@ -4,8 +4,8 @@ from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
 from authlib.integrations.flask_client import OAuth
-import db
-import auto_maily
+from . import db
+from . import auto_maily
 
 CLIENT_ID = '661793370921-cih2ksvgggmhbrvobt0l6lua4l483orp.apps.googleusercontent.com'
 CLIENT_SECRET = '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'
