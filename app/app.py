@@ -7,11 +7,22 @@ from authlib.integrations.flask_client import OAuth
 import db
 import auto_maily
 
+CLIENT_ID = '661793370921-cih2ksvgggmhbrvobt0l6lua4l483orp.apps.googleusercontent.com'
+CLIENT_SECRET = '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'
+
+SCOPE = 'https://www.googleapis.com/auth/calendar'
+
 app = Flask(__name__)
 
 app.config.from_mapping(
     DATABASE=os.path.join(app.instance_path, 'tourdeflask.sqlite'),
 )
+
+def save_request_token(token):
+    print('ref_token: '+token)
+
+def fetch_request_token():
+    print('ziskej rer_token')
 
 app.secret_key = "56675hdd6shd74setj7474jst7878s1jt"
 oauth = OAuth(app)
@@ -19,17 +30,22 @@ google = oauth.register(
     name='google',
     client_id='661793370921-cih2ksvgggmhbrvobt0l6lua4l483orp.apps.googleusercontent.com',
     client_secret='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',
-    # access_token_url='https://accounts.google.com/o/oauth2/token',
-    # access_token_params=None,
+    client_kwargs={'scope': 'openid https://www.googleapis.com/auth/calendar'},
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
     # authorize_url='https://accounts.google.com/o/oauth2/auth',
     authorize_params=None,
     api_base_url='https://www.googleapis.com/oauth2/v1/',
-    userinfo_endpoint='https://openidconnect.googleapis.com/v3/userinfo',  # This is only needed if using openId to fetch user info
-    client_kwargs={'scope': 'email profile openid https://www.googleapis.com/auth/calendar', 'access_type': 'offline'},
+    userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',  # This is only needed if using openId to fetch user info
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-    access_type='offline',
+    offline=True,
     prompt='consent',
-    approval_prompt='force'
+    approval_prompt='force',
+    access_type='offline',
+    refresh_token_url=None,
+    save_request_token=save_request_token,
+    fetch_request_token=fetch_request_token,
+    GOOGLE_REFRESH_TOKEN_URL=None
 )
 
 # ensure the instance folder exists
@@ -167,6 +183,7 @@ def homepage():
 
 @app.route('/my_profile/caledar_auth')
 def calendar_login():
+    # return redirect('https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https%3A%2F%2F127.0.0.1:5000&prompt=consent&response_type=code&client_id={}&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&access_type=offline'.format('661793370921-cih2ksvgggmhbrvobt0l6lua4l483orp.apps.googleusercontent.com'))
     google = oauth.create_client('google')  # create the google oauth client
     redirect_uri = url_for('authorize', _external=True)
     return google.authorize_redirect(redirect_uri)
