@@ -1,9 +1,9 @@
 import os
-from typing import List
+from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-import db
+from . import db
 
 app = Flask(__name__)
 
@@ -23,12 +23,12 @@ with app.app_context():
     db.init_db()
 db.init_app(app)
 
-def hash_password(password):
+def hash_password(password: str) -> str:
     """Returns a hashed password"""
     hashed_password = sha256(password.encode()).hexdigest()
     return hashed_password
 
-def validate_login_info(uuid, password):
+def validate_login_info(uuid: str, password: str) -> Tuple[str, int]:
     """Checks if uuid and password is correct.
     
     Returns tuple(json error message, error code)
@@ -39,12 +39,12 @@ def validate_login_info(uuid, password):
     row = cursor.fetchone()
     cursor.close()
     if row is None:
-        return jsonify(code=404, message="User not found"), 404
+        return "User not found", 404
     if row[0] != hash_password(password):
-        return jsonify(code=401, message="Wrong password"), 401
-    return jsonify(code=200, message="Login info correct"), 200
+        return "Wrong password", 401
+    return "Login info correct", 200
 
-def require_login(func):
+def require_login(func: Callable) -> Callable:
     """Decorator for checking login info before showing a page.
 
     Returns an error page if there is no one logged in or the password is incorrect.
@@ -63,11 +63,11 @@ def require_login(func):
         res = validate_login_info(session['uuid'], session['password'])
         if res[1] == 200:
             return func(*args, **kwargs)
-        return res
+        return jsonify(code=res[1], message=res[0]), res[1]
     new_f.__name__ = func.__name__
     return new_f
 
-def lecturer_row_dict(json_string):
+def lecturer_row_dict(json_string: str) -> Dict:
     """Formats a lecturer json string into a row for saving in the SQL database."""
     data = json.loads(json_string)
     lecturer = {}
@@ -97,8 +97,8 @@ def lecturer_row_dict(json_string):
             lecturer[item] = data[item]
     return lecturer
 
-def row_to_lecturer(row):
-    """Formats a database row into lecturer json."""
+def row_to_lecturer(row: List) -> Dict:
+    """Formats a database row into lecturer dictionary."""
     data = {COLUMNS[i] : row[i] for i in range(len(COLUMNS))}
     if "price_per_hour" in data and not data["price_per_hour"] is None:
         data["price_per_hour"] = int(data["price_per_hour"])
@@ -108,7 +108,7 @@ def row_to_lecturer(row):
         data["tags"] = [{"uuid":id, "name":get_tag("uuid", id)[1]} for id in json.loads(data["tags"])]
     return data
 
-def get_lecturer_row(uuid):
+def get_lecturer_row(uuid: str) -> List:
     """Get a lecturer row from SQL databse.
 
     You may need to convert this row using row_to_lecturer(row).
@@ -118,7 +118,7 @@ def get_lecturer_row(uuid):
     cursor.close()
     return row
 
-def get_tag(param, value):
+def get_tag(param: str, value) -> List:
     """Get a tag from SQL databse.
     
     :param: can be only "name" or "uuid".
@@ -161,7 +161,7 @@ def lecturer_login():
     session["my_lecturer"] = None
     res = validate_login_info(uuid, data['password'])
     if res[1] != 200:
-        return res #TODO make this a popup
+        return jsonify(code=res[1], message=res[0]), res[1] #TODO make this a popup
     session["uuid"] = uuid
     session["password"] = data['password']
     session["my_lecturer"] = row_to_lecturer(get_lecturer_row(uuid))
@@ -295,7 +295,7 @@ def api_lecturer_get(uuid):
 def api_lecturer_edit(uuid, password):
     res = validate_login_info(uuid, password)
     if res[1] != 200:
-        return res
+        return jsonify(code=res[1], message=res[0]), res[1]
     row = get_lecturer_row(uuid)
     if row is None:
         return jsonify(code=404, message="User not found"), 404
