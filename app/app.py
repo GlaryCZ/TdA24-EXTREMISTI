@@ -3,7 +3,7 @@ from typing import List
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-from authlib.integrations.flask_client import OAuth
+# from authlib.integrations.flask_client import OAuth
 from . import db
 from . import auto_maily
 
@@ -23,7 +23,7 @@ def save_request_token(token):
 
 def fetch_request_token():
     print('ziskej rer_token')
-
+'''
 app.secret_key = "56675hdd6shd74setj7474jst7878s1jt"
 oauth = OAuth(app)
 google = oauth.register(
@@ -47,6 +47,7 @@ google = oauth.register(
     fetch_request_token=fetch_request_token,
     GOOGLE_REFRESH_TOKEN_URL=None
 )
+'''
 
 # ensure the instance folder exists
 try:
@@ -180,7 +181,7 @@ def homepage():
     # TODO
     return render_template("homepage.html")
 '''
-
+'''
 @app.route('/my_profile/caledar_auth')
 def calendar_login():
     # return redirect('https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https%3A%2F%2F127.0.0.1:5000&prompt=consent&response_type=code&client_id={}&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&access_type=offline'.format('661793370921-cih2ksvgggmhbrvobt0l6lua4l483orp.apps.googleusercontent.com'))
@@ -203,6 +204,7 @@ def authorize():
     session['access_token'] = token['access_token']
     session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
     return redirect('/my_profile')
+'''
 
 @app.route('/login', methods = ["GET", 'POST'])
 def lecturer_login():
