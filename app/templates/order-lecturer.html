@@ -10,13 +10,12 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='lecturerpage-styles.css')}}">
 <script src="https://npmcdn.com/flatpickr/dist/l10n/cs.js"></script>
-
 {% endblock %}
 
 {% block content %}
 <div id="lecturer-login-wrapper">
     <form method="post">
-        <h3 class="login-text" style="font-size: 30px;">Objednáváte mentora {{lecturer.first_name}} {{lecturer.last_name}}</h3>
+        <h1 class="login-text">Objednáváte mentora {{lecturer.first_name}} {{lecturer.last_name}}</h1>
         <br>
         <p class="login-text">Křestní jméno: </p>
         <input type="text" name="first-name" class="login-input">
@@ -41,29 +40,14 @@
           </label><br>
         {% endfor %}
         <p class="login-text">Zpráva pro mentora: </p>
-        <textarea class="login-input" name="message" rows="4" cols="50" style="height: 100px;"></textarea>
+        <textarea class="login-input" id="tall" name="message" rows="4" cols="50"></textarea>
 
-        <input type="submit" value="objednat" class="button" style="width: 380px;"><br>
+        <input type="submit" value="objednat" class="button" id="width380"><br>
     </form>
     </div>
 
 
 
-<script>
-    config = {
-        enableTime: true,
-        dateFormat: "d-m-Y H",
-        time_24hr: true,
-        minDate: new Date().fp_incr(3),
-        minuteIncrement: 60,
-        altFormat: "j. F, H:00",
-        altInput: true,
-        "locale": 'cs',
-        minTime: "8:00",
-        maxTime: "19:00",
-    }
-    flatpickr("#datepick", config);
 
-    
-</script>
+<script src="{{ url_for('static', filename='flatpicr.js')}}"></script>
 {% endblock %}

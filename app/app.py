@@ -3,7 +3,14 @@ from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
+from authlib.integrations.flask_client import OAuth
 from . import db
+from . import auto_maily
+
+CLIENT_ID = '661793370921-cih2ksvgggmhbrvobt0l6lua4l483orp.apps.googleusercontent.com'
+CLIENT_SECRET = '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'
+
+SCOPE = 'https://www.googleapis.com/auth/calendar'
 
 app = Flask(__name__)
 
@@ -11,7 +18,35 @@ app.config.from_mapping(
     DATABASE=os.path.join(app.instance_path, 'tourdeflask.sqlite'),
 )
 
+def save_request_token(token):
+    print('ref_token: '+token)
+
+def fetch_request_token():
+    print('ziskej rer_token')
+
 app.secret_key = "56675hdd6shd74setj7474jst7878s1jt"
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id='661793370921-cih2ksvgggmhbrvobt0l6lua4l483orp.apps.googleusercontent.com',
+    client_secret='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',
+    client_kwargs={'scope': 'openid https://www.googleapis.com/auth/calendar'},
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    # authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',  # This is only needed if using openId to fetch user info
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    offline=True,
+    prompt='consent',
+    approval_prompt='force',
+    access_type='offline',
+    refresh_token_url=None,
+    save_request_token=save_request_token,
+    fetch_request_token=fetch_request_token,
+    GOOGLE_REFRESH_TOKEN_URL=None
+)
 
 # ensure the instance folder exists
 try:
@@ -139,13 +174,37 @@ def get_orders_for_lecturer():
     cursor.close()
     all_orders = [[r for r in row] for row in rows]
     return all_orders
-
+'''
 @app.route('/', methods = ["GET"])
 def homepage():
     # TODO
     return render_template("homepage.html")
+'''
 
-@app.route('/login-lecturer', methods = ["GET", 'POST'])
+@app.route('/my_profile/caledar_auth')
+def calendar_login():
+    # return redirect('https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https%3A%2F%2F127.0.0.1:5000&prompt=consent&response_type=code&client_id={}&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&access_type=offline'.format('661793370921-cih2ksvgggmhbrvobt0l6lua4l483orp.apps.googleusercontent.com'))
+    google = oauth.create_client('google')  # create the google oauth client
+    redirect_uri = url_for('authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+@app.route('/my_profile/authorize')
+def authorize():
+    google = oauth.create_client('google')  # create the google oauth client
+    token = google.authorize_access_token(access_type='offline')  # Access token from google (needed to get user info)
+    print(token)
+    # print(token['refresh_token'])
+    resp = google.get('userinfo', token=token)  # userinfo contains stuff u specificed in the scrope
+    user_info = resp.json()
+    user = oauth.google.userinfo()  # uses openid endpoint to fetch user info
+    # Here you use the profile/user data that you got and query your database find/register the user
+    # and set ur own data in the session not the profile from google
+    session['profile'] = user_info
+    session['access_token'] = token['access_token']
+    session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
+    return redirect('/my_profile')
+
+@app.route('/login', methods = ["GET", 'POST'])
 def lecturer_login():
     if request.method == "GET":
         return render_template("login-lecturer.html")
@@ -172,7 +231,7 @@ def lecturer_logout():
     session["uuid"] = None
     session["password"] = None
     session["my_lecturer"] = None
-    return redirect(url_for("homepage"))
+    return redirect(url_for("lecotrs_search_page"))
 
 @app.route('/register-lecturer', methods = ["GET", 'POST'])
 def lecturer_registration():
@@ -200,7 +259,7 @@ def lecturer_registration():
     session["my_lecturer"] = row_to_lecturer(get_lecturer_row(new_uuid))
     return redirect(url_for("lecturer_private_profile"))
 
-@app.route('/search', methods = ["GET", "POST"])
+@app.route('/', methods = ["GET", "POST"])
 def lecotrs_search_page():
     parameters = {}
     my_tags = []
@@ -233,10 +292,17 @@ def lecotrs_search_page():
     cursor.close()
     return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price)
 
-@app.route("/my_profile")
+@app.route("/my_profile", methods=['GET', 'POST'])
 @require_login
 def lecturer_private_profile():
+    if request.method == 'POST':
+        
+        data = dict(request.form) # TODO
+        auto_maily.mail(data['submit'], data['email'], data['message'])
+        return data
     orders_info = get_orders_for_lecturer()
+    for order in orders_info:
+        order[5] = order[5].strip("][").replace("'", '').split(', ')
     return render_template('lecturer-logged-in.html', orders=orders_info)
 
 @app.route("/lecturer/<uuid>")
@@ -323,14 +389,15 @@ def order_page(uuid):
         return render_template('order-lecturer.html', lecturer = lecturer)
     else:
         data = dict(request.form)
-        my_tags = [t for t in data if not t in ['first-name', 'last-name', 'email', 'phone-number', 'meet-type', 'date', 'message']]
+        my_tags_uuids = [t for t in data if not t in ['first-name', 'last-name', 'email', 'phone-number', 'meet-type', 'date', 'message']]
+        my_tags = [get_tag("uuid", id)[1] for id in my_tags_uuids]
         # return f'{data}'
         new_dict = {key: val for key, val in data.items() if key != 'message'}
         if any(new_dict[i] == "" for i in new_dict):
             return jsonify(code=404, message="Missing required field"), 404 #TODO make this a popup
         db.get_db().execute(
-            'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time) VALUES (?,?,?,?,?,?,?,?);',
-            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], str(my_tags), data['meet-type'], data['date']]
+            'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time, message_for_lecturer) VALUES (?,?,?,?,?,?,?,?,?);',
+            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], str(my_tags), data['meet-type'], data['date'], data['message']]
         )
         db.get_db().commit()
 

@@ -17,13 +17,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script>
+        $(function () {
+$("#slider-range").slider({
+    range: true,
+    min: 0,
+    max: "{{max_price}}",
+values: [$('#amount-min').val(), $('#amount-max').val()],
+slide: function (event, ui) {
+    $("#amount-min").val(ui.values[0]);
+    $("#amount-max").val(ui.values[1]);
+}
+});
+} );
+    </script>
+    <meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; 
+  img-src https://* 'self'; 
+  child-src 'none';
+  script-src code.jquery.com 'self' https://cdn.jsdelivr.net https://npmcdn.com;
+  font-src https://fonts.gstatic.com 'self';
+  style-src 'self' https://npmcdn.com https://cdn.jsdelivr.net 'unsafe-inline' https://fonts.googleapis.com code.jquery.com;
+  frame-src https://calendar.google.com/;
+  "/>
     {% block head %}
     {% endblock%}
 </head>
 <body>
     <div id="nav-bar">
-        <a href = "{{url_for('homepage')|e}}">
-            <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" style="vertical-align:middle;margin:40px 40px">
+        <a href = "{{url_for('lecotrs_search_page')|e}}">
+            <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" id="top-img">
         </a>
         {%if session["uuid"]%}
         <a href = "{{url_for('lecturer_private_profile')|e}}">
@@ -36,8 +60,8 @@
     </div>
     {% block content %}{% endblock%}
     <footer>
-        <a href = "{{url_for('homepage')|e}}">
-        <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" style="vertical-align:middle;margin:40px 40px;float: right;">
+        <a href = "{{url_for('lecotrs_search_page')|e}}">
+        <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" id="footer-img">
         </a>
     </footer>
 </body>

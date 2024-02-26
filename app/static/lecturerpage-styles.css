@@ -28,6 +28,22 @@
 
 }
 
+.decline {
+  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+}
+
+.decline:hover {
+  cursor: pointer;
+}
+
+.profiles {
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 50px;
+  margin: 20px;
+}
+
 .flatpickr-months .flatpickr-month {
     background-color: #00384D;
 }
@@ -53,4 +69,12 @@
 
 .flatpickr-minute {
     pointer-events:none;
+}
+
+#tall {
+  height: 150px;
+}
+
+#width380 {
+  width: 380px;
 }
