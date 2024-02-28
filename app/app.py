@@ -135,14 +135,10 @@ def get_tag(param, value) -> List:
 def get_locations() -> List:
     cursor = db.get_db().execute('SELECT location FROM lecturers')
     loc = [row[0] for row in cursor.fetchall()]
-    print(loc, "lol")
     cursor.close()
     return loc
 
-@app.route('/locations', methods=['GET'])
-def show_locations():
-    locations = get_locations()
-    return render_template('locations.html', locations=locations)
+
 
 @require_login
 def get_orders_for_lecturer():
