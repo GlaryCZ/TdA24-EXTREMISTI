@@ -24,6 +24,18 @@ CREATE TABLE IF NOT EXISTS tags (
   "name" TEXT
 );
 
+CREATE TABLE IF NOT EXISTS aproved_orders (
+  uuid TEXT NOT NULL,
+  first_name TEXT,
+  last_name TEXT,
+  email TEXT,
+  phone_number TEXT,
+  tags JSON DEFAULT('[]'),
+  meet_type TEXT, --offline/online
+  date_and_time TEXT,
+  message_for_lecturer TEXT
+);
+
 
 
 

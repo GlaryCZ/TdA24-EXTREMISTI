@@ -1,5 +1,4 @@
 import os
-import sqlite3
 from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
@@ -141,10 +140,10 @@ def get_locations() -> List:
 
 
 @require_login
-def get_orders_for_lecturer():
+def get_orders_for_lecturer(table):
     '''Returns list of lists with info of each order of currently logged in user'''
     cursor = db.get_db().execute(
-        'SELECT * FROM orders WHERE uuid = ?',
+        f'SELECT * FROM {table} WHERE uuid = ?',
         [session['uuid']]
     )
     rows = cursor.fetchall()
@@ -243,17 +242,40 @@ def lecotrs_search_page():
     return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price, locations = location)
 
 @app.route("/my_profile", methods=['GET', 'POST'])
-
 @require_login
 def lecturer_private_profile():
     if request.method == 'POST':
-        
         data = dict(request.form) # TODO
         auto_maily.mail(data['submit'], data['email'], data['message'])
-    orders_info = get_orders_for_lecturer()
+        print(data)
+        if data['submit'] == 'ano':
+            db.get_db().execute(
+                'INSERT INTO aproved_orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time, message_for_lecturer) VALUES (?,?,?,?,?,?,?,?,?);',
+                [data['uuid'], data["first_name"], data["last_name"], data['email'], data['phone_number'], str(data['tags']), data['meet_type'], data['date_and_time'], data['message']]
+            )
+        db.get_db().execute("DELETE FROM orders WHERE date_and_time = ? and uuid = ? and tags=?", 
+                            [data['date_and_time'], data['uuid'], str(data['tags'])])
+        db.get_db().commit()
+        cursor = db.get_db().execute('SELECT * FROM aproved_orders')
+        rows = cursor.fetchall()
+        cursor.close()
+        print(rows)
+
+    orders_info = get_orders_for_lecturer('orders')
     for order in orders_info:
         order[5] = order[5].strip("][").replace("'", '').split(', ')
     return render_template('lecturer-logged-in.html', orders=orders_info)
+
+@app.route("/my_profile/approved-orders", methods=['GET', 'POST'])
+@require_login
+def approved_orders():
+    if request.method == 'POST':
+        # TODO:
+        return 'POST'
+    orders_info = get_orders_for_lecturer('aproved_orders')
+    for order in orders_info:
+        order[5] = order[5].strip("][").replace("'", '').split(', ')
+    return render_template('approved-orders.html', orders=orders_info)
 
 @app.route("/lecturer/<uuid>")
 def profile(uuid):

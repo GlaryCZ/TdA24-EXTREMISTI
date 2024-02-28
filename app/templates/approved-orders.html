@@ -4,8 +4,8 @@
 {% endblock %}
 {% block content %}
 <div id="profile" class="profiles">
-    <h1>Nevyřízené objednávky</h1>
-    <p>Po potvrzení/zamítnutí objednávky bude klient automaticky informován mailem.</p>
+    <h1>Potvrzené objednávky</h1>
+    <p>Zde máte možnost přeobjednávat/rušit objednávky</p>
 {% for order in orders %}
 <div id="profile">
     <div class="space-div"></div>
@@ -33,16 +33,15 @@
             <input name="uuid" type="hidden" value="{{order[0]}}">
             <h1>Zpráva pro klienta: </h1>
             <textarea class="login-input" name="message" rows="4" cols="50" style="height: 200px;"></textarea><br>
-            <button class="button" style="width: 300px;" name="submit" value="ano">Potvrdit objednávku</button>
-            <button class="decline" name="submit" value="ne">Zamítnout</button>
+            <button class="button" style="width: 300px;" name="submit" value="ano">přeobjednat</button>
+            <button class="decline" name="submit" value="ne">zrušit objednávku</button>
         </form>
     </div>
 
 </div>
 {% endfor %}
 </div>
-<a href="{{url_for('approved_orders')|e}}">
-    <button class="button" name="submit" value="ne">Zobrazit potvrzené objednávky</button>
+<a href="{{url_for('lecturer_private_profile')|e}}">
+    <button class="button" name="submit" value="ne">Zobrazit nevyřízené objednávky</button>
 </a>
-
-{% endblock%}
+{% endblock %}
