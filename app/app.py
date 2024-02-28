@@ -122,12 +122,12 @@ def get_lecturer_row(uuid: str) -> List:
     cursor.close()
     return row
 
-def get_tag() -> List:
+def get_tag(param, value) -> List:
     """Get a tag from SQL databse.
     
     :param: can be only "name" or "uuid".
     """
-    cursor = db.get_db().execute('select * from tags where '+param+' = ?', [value])
+    cursor = db.get_db().execute('select * from tags where '+ param +' = ?', [value])
     row = cursor.fetchone()
     cursor.close()
     return row
@@ -135,6 +135,7 @@ def get_tag() -> List:
 def get_locations() -> List:
     cursor = db.get_db().execute('SELECT location FROM lecturers')
     loc = [row[0] for row in cursor.fetchall()]
+    print(loc, "lol")
     cursor.close()
     return loc
 
@@ -237,15 +238,16 @@ def lecotrs_search_page():
     rows = cursor.fetchall()
     cursor.close()
     tags = [{"uuid":row[0], "name":row[1]}for row in rows]
-    location = get_locations
+    location = get_locations()
 
     
     cursor = db.get_db().execute("SELECT MAX(price_per_hour) FROM lecturers; ")
     max_price = cursor.fetchone()[0]
     cursor.close()
-    return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price, location = location)
+    return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price, locations = location)
 
 @app.route("/my_profile", methods=['GET', 'POST'])
+
 @require_login
 def lecturer_private_profile():
     if request.method == 'POST':

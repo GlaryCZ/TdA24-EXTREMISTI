@@ -31,18 +31,19 @@
       <input type="text" id="amount-max" placeholder="do" name="max_price" class="inp-price" {% if last_searched.max_price %}
         value="{{last_searched.max_price}}" {% else %} value="{{max_price}}" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" /><br>
     </div>
-    <form>
-      <label for="location">Select a location:</label>
-      <select id="location" name="location">
-          {% for location in locations %}
-              <option value="{{ location }}">{{ location }}</option>
-          {% endfor %}
-      </select>
-  </form>
 
-    <label id="location-text">Lokalita</label><br>
-    <input type="text" name="location" placeholder="Město" list="seznam-lokaci" id="location-input-field" {% if last_searched.location %}
-      value="{{last_searched.location}}" {% endif %}><br>
+    <label id="location-text" for="location">Lokalita</label><br>
+    <select id="location" name="location">
+        {% for location in locations %}
+            <option value="{{ location }}">{{ location }}</option>
+        {% endfor %}
+    </select>
+        
+
+    <!-- <input type="text" name="location" placeholder="Město" list="seznam-lokaci" id="location-input-field" {% if last_searched.location %}
+      value="{{last_searched.location}}" {% endif %}> -->
+      
+    <br>
 
 
     <label id="tags-text">Tagy</label><br>

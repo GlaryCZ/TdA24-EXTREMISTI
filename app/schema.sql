@@ -23,6 +23,10 @@ CREATE TABLE IF NOT EXISTS tags (
   UUID TEXT UNIQUE NOT NULL,
   "name" TEXT
 );
+
+
+
+
 CREATE TABLE IF NOT EXISTS orders (
   uuid TEXT NOT NULL,
   first_name TEXT,
