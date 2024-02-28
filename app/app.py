@@ -1,4 +1,5 @@
 import os
+import sqlite3
 from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
@@ -121,7 +122,7 @@ def get_lecturer_row(uuid: str) -> List:
     cursor.close()
     return row
 
-def get_tag(param: str, value) -> List:
+def get_tag() -> List:
     """Get a tag from SQL databse.
     
     :param: can be only "name" or "uuid".
@@ -130,6 +131,17 @@ def get_tag(param: str, value) -> List:
     row = cursor.fetchone()
     cursor.close()
     return row
+
+def get_locations() -> List:
+    cursor = db.get_db().execute('SELECT location FROM lecturers')
+    loc = [row[0] for row in cursor.fetchall()]
+    cursor.close()
+    return loc
+
+@app.route('/locations', methods=['GET'])
+def show_locations():
+    locations = get_locations()
+    return render_template('locations.html', locations=locations)
 
 @require_login
 def get_orders_for_lecturer():
@@ -225,11 +237,13 @@ def lecotrs_search_page():
     rows = cursor.fetchall()
     cursor.close()
     tags = [{"uuid":row[0], "name":row[1]}for row in rows]
+    location = get_locations
+
     
     cursor = db.get_db().execute("SELECT MAX(price_per_hour) FROM lecturers; ")
     max_price = cursor.fetchone()[0]
     cursor.close()
-    return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price)
+    return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price, location = location)
 
 @app.route("/my_profile", methods=['GET', 'POST'])
 @require_login
@@ -258,6 +272,7 @@ def api_get_all_lecturers():
     cursor = db.get_db().execute('select * from lecturers')
     rows = cursor.fetchall()
     cursor.close()
+
     return jsonify([row_to_lecturer(row) for row in rows])
 
 @app.post("/api/lecturers")
@@ -348,6 +363,7 @@ def order_page(uuid):
 @app.route("/login/monthly-calendar", methods = ["GET"])
 def calendar_monthly():
     return render_template('calendar-monthly.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
