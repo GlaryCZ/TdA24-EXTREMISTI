@@ -17,10 +17,15 @@
         {{order[1]}} {{order[2]}}
         </h1>
         <p>email: {{order[3]}}</p>
-        <p>datum a cas: {{order[7]}}:00</p>
+        <p>datum a čas: {{order[7]}}:00</p>
         <p>telefon: {{order[4]}}</p>
         <p>typ schůzky: {{order[6]}}</p>
+
+        {% if order[5]|length < 0 %}
         <p>tagy: {% for tag in order[5] %} <span class="tag">{{tag}}</span>{% endfor %}</p>
+        {%else%}
+        <p>tagy: NEBYLY ZVOLENY</p>
+        {%endif%}
         <p>zpráva od klienta: {{order[8]}}</p>
     </div>
     <div class="right-side" style="width: 49%; display: inline-block;">
