@@ -25,12 +25,16 @@
     border-color: rgb(133, 133, 133);
     border-image: initial;
     font-size: 20px;
-
 }
 
 .decline {
   background-color: rgba(0, 0, 0, 0);
   border: 0;
+  left: 20%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  position: relative;
+  margin-top: 8px;
 }
 
 .decline:hover {
