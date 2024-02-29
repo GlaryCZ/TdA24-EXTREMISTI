@@ -150,6 +150,12 @@ def get_locations() -> List:
     cursor.close()
     return loc
 
+def get_time() -> List:
+    cursor = db.get_db().execute('SELECT date_and_time FROM aproved_orders')
+    time = [row[0] for row in cursor.fetchall()][0]
+    cursor.close()
+    return time
+
 def get_lec_name(uuid : str) -> List:
     cursor = db.get_db().execute('SELECT first_name FROM lecturers WHERE uuid = ?', [uuid])
     lec_name = [row[0] for row in cursor.fetchall()][0]
@@ -281,7 +287,7 @@ def lecturer_private_profile():
     if request.method == 'POST':
         data = dict(request.form) # TODO
         try:
-            auto_maily.mail(data['submit'], data['email'], data['message'], get_lec_name(data['uuid']))
+            auto_maily.mail(data['submit'], data['email'], data['message'], get_lec_name(data['uuid']), get_time())
             
         except ValueError:
                 ("Wrong email!")
