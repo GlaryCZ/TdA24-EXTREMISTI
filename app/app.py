@@ -137,6 +137,12 @@ def get_locations() -> List:
     cursor.close()
     return loc
 
+def get_lec_name(uuid : str) -> List:
+    cursor = db.get_db().execute('SELECT first_name FROM lecturers WHERE uuid = ?', [uuid])
+    lec_name = [row[0] for row in cursor.fetchall()][0]
+    cursor.close()
+    return lec_name
+
 
 
 @require_login
@@ -246,7 +252,7 @@ def lecotrs_search_page():
 def lecturer_private_profile():
     if request.method == 'POST':
         data = dict(request.form) # TODO
-        auto_maily.mail(data['submit'], data['email'], data['message'])
+        auto_maily.mail(data['submit'], data['email'], data['message'], get_lec_name(data['uuid']))
         print(data)
         if data['submit'] == 'ano':
             db.get_db().execute(
