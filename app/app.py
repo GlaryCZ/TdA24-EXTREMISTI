@@ -3,8 +3,8 @@ from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-from . import db
-from . import auto_maily
+import db
+import auto_maily
 
 # to .env TODO: novej tag schvali admin, max pocet tagu Bootstrap
 
@@ -150,6 +150,12 @@ def get_locations() -> List:
     cursor.close()
     return loc
 
+def get_lec_name(uuid : str) -> List:
+    cursor = db.get_db().execute('SELECT first_name FROM lecturers WHERE uuid = ?', [uuid])
+    lec_name = [row[0] for row in cursor.fetchall()][0]
+    cursor.close()
+    return lec_name
+
 
 
 @require_login
@@ -272,7 +278,11 @@ def lecturer_edit_profile():
 def lecturer_private_profile():
     if request.method == 'POST':
         data = dict(request.form) # TODO
-        auto_maily.mail(data['submit'], data['email'], data['message'])
+        try:
+            auto_maily.mail(data['submit'], data['email'], data['message'], get_lec_name(data['uuid']))
+            
+        except ValueError:
+                ("Wrong email!")
         print(data)
         if data['submit'] == 'ano':
             db.get_db().execute(
