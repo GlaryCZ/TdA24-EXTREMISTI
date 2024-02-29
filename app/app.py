@@ -71,7 +71,7 @@ def require_login(func: Callable) -> Callable:
     return new_f
 
 def lecturer_row_dict(json_string: str) -> Dict:
-    """Formats a lecturer json string into a row for saving in the SQL database."""
+    """Formats a lecturer json string into a lecturer dictionary."""
     data = json.loads(json_string)
     lecturer = {}
     if "tags" in data:
@@ -104,11 +104,17 @@ def row_to_lecturer(row: List) -> Dict:
     """Formats a database row into lecturer dictionary."""
     data = {COLUMNS[i] : row[i] for i in range(len(COLUMNS))}
     if "price_per_hour" in data and not data["price_per_hour"] is None:
-        data["price_per_hour"] = int(data["price_per_hour"])
+        try:
+            data["price_per_hour"] = int(data["price_per_hour"])
+        except:
+            data["price_per_hour"] = None
     if "contact" in data and not data["contact"] is None:
         data["contact"] = json.loads(data["contact"])
     if "tags" in data and not data["tags"] is None:
-        data["tags"] = [{"uuid":id, "name":get_tag("uuid", id)[1]} for id in json.loads(data["tags"])]
+        try:
+            data["tags"] = [{"uuid":id, "name":get_tag("uuid", id)[1]} for id in json.loads(data["tags"])]
+        except:
+            data["tags"] = []
     return data
 
 def get_lecturer_row(uuid: str) -> List:
@@ -130,6 +136,13 @@ def get_tag(param, value) -> List:
     row = cursor.fetchone()
     cursor.close()
     return row
+
+def get_all_tags() -> List:
+    """Get all tags from SQL databse."""
+    cursor = db.get_db().execute('select * from tags')
+    rows = cursor.fetchall()
+    cursor.close()
+    return [{"uuid":row[0], "name":row[1]}for row in rows]
 
 def get_locations() -> List:
     cursor = db.get_db().execute('SELECT location FROM lecturers')
@@ -228,18 +241,31 @@ def lecotrs_search_page():
     cursor.close()
     lecturers = [row_to_lecturer(row) for row in rows]
     lecturers = [k for k in lecturers if all(tag in [i["uuid"] for i in k["tags"]] for tag in my_tags)]
-
-    cursor = db.get_db().execute('SELECT * FROM tags')
-    rows = cursor.fetchall()
-    cursor.close()
-    tags = [{"uuid":row[0], "name":row[1]}for row in rows]
-    location = get_locations()
-
-    
+    location = get_locations()    
     cursor = db.get_db().execute("SELECT MAX(price_per_hour) FROM lecturers; ")
     max_price = cursor.fetchone()[0]
     cursor.close()
-    return render_template('lectors-search-page.html', lecturers = lecturers, tags = tags, last_searched = data, max_price = max_price, locations = location)
+    return render_template('lectors-search-page.html', lecturers = lecturers, tags = get_all_tags(), last_searched = data, max_price = max_price, locations = location)
+
+@app.route("/my_profile/edit", methods=['GET', 'POST'])
+@require_login
+def lecturer_edit_profile():
+    if request.method == "POST":
+        data = dict(request.form)
+        lecturer = {key:value for key, value in data.items() if (key in COLUMNS) and (value != "") and (not value is None)}
+        emails = [value for key, value in data.items() if ("email" in key) and (value != "") and (not value is None)]
+        telephone_numbers = [value for key, value in data.items() if ("tel" in key) and (value != "") and (not value is None)]
+        lecturer["contact"] = json.dumps({"telephone_numbers":telephone_numbers, "emails":emails})
+        tags = [key[3:] for key, value in data.items() if key[:3]=="tag" and value=="on"]
+        lecturer["tags"] = json.dumps(tags)
+        print(data)
+        print(lecturer)
+        db.get_db().execute(
+            'UPDATE lecturers SET '+ ', '.join([k+" = ?" for k in lecturer]) +' WHERE uuid = ?',
+            [lecturer[k] for k in lecturer]+[session["uuid"]])
+        db.get_db().commit()
+        session["my_lecturer"] = row_to_lecturer(get_lecturer_row(session["uuid"]))
+    return render_template("lecturer-edit.html", tags=get_all_tags(), mytags=[i["uuid"] for i in session["my_lecturer"]["tags"]])
 
 @app.route("/my_profile", methods=['GET', 'POST'])
 @require_login
@@ -292,7 +318,6 @@ def api_get_all_lecturers():
     cursor = db.get_db().execute('select * from lecturers')
     rows = cursor.fetchall()
     cursor.close()
-
     return jsonify([row_to_lecturer(row) for row in rows])
 
 @app.post("/api/lecturers")

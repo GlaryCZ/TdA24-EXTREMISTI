@@ -56,6 +56,10 @@ slide: function (event, ui) {
         <a href = "{{url_for('lecturer_logout')|e}}">
              Logout
         </a>
+        {%else%}
+        <a href = "{{url_for('lecturer_login')|e}}">
+             Log in
+        </a>  
         {%endif%}
     </div>
     {% block content %}{% endblock%}
