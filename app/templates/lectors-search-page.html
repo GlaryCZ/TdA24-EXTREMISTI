@@ -30,14 +30,19 @@
         value="{{last_searched.min_price}}" {% else %} value="0" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
       <input type="text" id="amount-max" placeholder="do" name="max_price" class="inp-price" {% if last_searched.max_price %}
         value="{{last_searched.max_price}}" {% else %} value="{{max_price}}" {% endif %} oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" /><br>
-    </div>
+    </div><br>
 
     <label id="location-text" for="location">Lokalita</label><br>
+    <div class="container">
+      <div class="select">
     <select id="location" name="location">
         {% for location in locations %}
             <option value="{{ location }}">{{ location }}</option>
         {% endfor %}
     </select>
+  </div>
+  <div class = "down_note"></div>
+  </div>
         
 
     <!-- <input type="text" name="location" placeholder="Město" list="seznam-lokaci" id="location-input-field" {% if last_searched.location %}
@@ -76,7 +81,7 @@
       <p class="lecturer-claim"><i>{{lecturer.claim|e}}</i></p>
       {% if lecturer.price_per_hour %}<p>{{lecturer.price_per_hour|e}} kč za hodinu</p>{% endif %}
       {% if lecturer.location %}<p>{{ lecturer.location|e }}</p>{% endif %}
-      <p>{% for tag in lecturer.tags %} <a class="tag">{{tag.name|e}}</a>{% endfor %}</p>
+      <p>{% for tag in lecturer.tags %} <span class="tag">{{tag.name|e}}</a>{% endfor %}</span>
     </a>
   </div>
   {% endfor %}
