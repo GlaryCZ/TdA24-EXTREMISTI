@@ -3,6 +3,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='lecturerpage-styles.css')}}">
 {% endblock %}
 {% block content %}
+<div>
+    <a href="{{url_for('lecturer_edit_profile')}}">Edit my profile</a>
+</div>
 <div id="profile" class="profiles">
     <h1>Nevyřízené objednávky</h1>
     <p>Po potvrzení/zamítnutí objednávky bude klient automaticky informován mailem.</p>
