@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='lecturerpage-styles.css')}}">
+<link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/cs.js"></script>
 {% endblock %}
 {% block content %}
 <div id="profile" class="profiles">
@@ -17,7 +21,7 @@
         <p>datum a cas: {{order[7]}}:00</p>
         <p>telefon: {{order[4]}}</p>
         <p>typ schůzky: {{order[6]}}</p>
-        <p>tagy: {% for tag in order[5] %} <a class="tag">{{tag}}</a>{% endfor %}</p>
+        <p>tagy: {% for tag in order[5] %} <span class="tag">{{tag}}</span>{% endfor %}</p>
         <p>zpráva od klienta: {{order[8]}}</p>
     </div>
     <div class="right-side" style="width: 49%; display: inline-block;">
@@ -33,7 +37,9 @@
             <input name="uuid" type="hidden" value="{{order[0]}}">
             <h1>Zpráva pro klienta: </h1>
             <textarea class="login-input" name="message" rows="4" cols="50" style="height: 200px;"></textarea><br>
-            <button class="button" style="width: 300px;" name="submit" value="ano">přeobjednat</button>
+            <p style="margin: 0; text-indent: 0;">Nové datum schůzky:</p>
+            <input type="datetime-local" id="datepick" class="login-input" name="date"><br>
+            <button class="button" style="width: 300px;" name="submit" value="ano">přeobjednat</button><br>
             <button class="decline" name="submit" value="ne">zrušit objednávku</button>
         </form>
     </div>
@@ -44,4 +50,5 @@
 <a href="{{url_for('lecturer_private_profile')|e}}">
     <button class="button" name="submit" value="ne">Zobrazit nevyřízené objednávky</button>
 </a>
+<script src="{{ url_for('static', filename='flatpicr.js')}}"></script>
 {% endblock %}

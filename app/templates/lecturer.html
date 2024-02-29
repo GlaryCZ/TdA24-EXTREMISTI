@@ -25,7 +25,7 @@
   <h2>Tagy:</h2>
   <p>
     {% for tag in lecturer.tags %}
-      <a class="tag">{{ tag.name|e }}</a>
+      <span class="tag">{{ tag.name|e }}</span>
     {% endfor %}
   </p>
   <h3>Cena:</h3>
@@ -38,10 +38,10 @@
   </p>
   <h3>Kontakt:</h3>
     {% for phone in lecturer.contact.telephone_numbers %}
-      <p>{{ phone|e }}</p>
+      <p><a href="tel:{{ phone|e }}"><u>{{ phone|e }}</u></a></p>
     {% endfor %}
     {% for mail in lecturer.contact.emails %}
-      <p>{{ mail|e }}</p>
+      <p><a href="mailto:{{ mail|e }}"><u>{{ mail|e }}</u></a></p>
     {% endfor %}
   </div>
 </div>
