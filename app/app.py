@@ -140,8 +140,10 @@ def get_locations() -> List:
 def get_lec_name(uuid : str) -> List:
     cursor = db.get_db().execute('SELECT first_name FROM lecturers WHERE uuid = ?', [uuid])
     lec_name = [row[0] for row in cursor.fetchall()][0]
+    cursor = db.get_db().execute('SELECT last_name FROM lecturers WHERE uuid = ?', [uuid])
+    lec_lname = [row[0] for row in cursor.fetchall()][0]
     cursor.close()
-    return lec_name
+    return (lec_name + " " + lec_lname)
 
 
 

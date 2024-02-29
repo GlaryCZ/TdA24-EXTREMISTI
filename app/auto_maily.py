@@ -24,10 +24,10 @@ def mail(state, email, message, name):
 
     if state=='ano':
         msg['Subject'] = 'Potvrzení lekce'
-        body = f"Dobrý den, vaše žádost o lektora {name} byla přijata, \n {message} "
+        body = f"Dobrý den, vaše žádost od lektora {name} byla přijata, \n {message} "
     else:
         msg['Subject'] = 'Zamítnutí lekce'
-        body = "Dobrý den, je nám líto, ale vaše žádost o lekci byla zamítnuta"
+        body = "Dobrý den, je nám líto, ale vaše žádost o lekci od {name} byla zamítnuta"
 
     msg.attach(MIMEText(body, 'plain'))
 
