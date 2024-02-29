@@ -53,9 +53,11 @@ slide: function (event, ui) {
         <a href = "{{url_for('lecturer_private_profile')|e}}">
              Logged in as {{session["my_lecturer"].first_name|e}} {{session["my_lecturer"].last_name|e}}
         </a>  
+        <button class = "nButt" >
         <a href = "{{url_for('lecturer_logout')|e}}">
              Logout
         </a>
+    </button>
         {%endif%}
     </div>
     {% block content %}{% endblock%}
