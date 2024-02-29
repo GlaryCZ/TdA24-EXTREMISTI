@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lecturerpage-styles.css')}}">
+{% endblock%}
+{% block content %}
+
+<div id="lecturer-login-wrapper">
+<form method="post">
+    <h1>Edit info</h1>
+    <p class="login-text">title before:</p>
+    <input type="text" name="title_before" class="login-input" value="{{session['my_lecturer'].title_before|e}}">
+    <p class="login-text">first name:</p>
+    <input type="text" name="first_name" class="login-input" value="{{session['my_lecturer'].first_name|e}}">
+    <p class="login-text">middle name:</p>
+    <input type="text" name="middle_name" class="login-input" value="{{session['my_lecturer'].middle_name|e}}">
+    <p class="login-text">last name:</p>
+    <input type="text" name="last_name" class="login-input" value="{{session['my_lecturer'].last_name|e}}">
+    <p class="login-text">title after:</p>
+    <input type="text" name="title_after" class="login-input" value="{{session['my_lecturer'].title_after|e}}">
+    <p class="login-text">picture_url:</p>
+    <input type="url" name="picture_url" class="login-input" value="{{session['my_lecturer'].picture_url|e}}">
+    <p class="login-text">location:</p>
+    <input type="text" name="location" class="login-input" value="{{session['my_lecturer'].location|e}}">
+    <p class="login-text">claim:</p>
+    <input type="text" name="claim" class="login-input" value="{{session['my_lecturer'].claim|e}}">
+    <p class="login-text">bio:</p>
+    <textarea name="bio" class="login-input">{{session['my_lecturer'].bio|e}}</textarea>
+    <p class="login-text">price_per_hour:</p>
+    <input type="number" name="price_per_hour" class="login-input" value="{{session['my_lecturer'].price_per_hour|e}}">
+    <h1>Tags</h1>
+    {% for tag in tags %}
+    <label for="{{tag.uuid}}" class="checkbox-label">
+      <a class="tag">{{tag.name|e}}</a>
+      <input type="checkbox" class="tag-checkbox" id="{{tag.uuid}}" name="tag{{tag.uuid}}" {% if tag.uuid in mytags %} checked{% endif %}>
+    </label><br>
+    {% endfor %}
+    <h1>Contact</h1>
+    <p class="login-text">email:</p>
+    {%for email in session['my_lecturer'].contact.emails%}
+    <input type="email" name="email{{loop.index0}}" id="email{{loop.index0}}" class="login-input" value="{{email|e}}">
+    {%endfor%}
+    <input type="email" name="emailnew" id="emailnew" class="login-input" value="{{email|e}}" placeholder="Extra email address">
+    <p class="login-text">telephone number:</p>
+    {%for tel in session['my_lecturer'].contact.telephone_numbers%}
+    <input type="tel" name="tel{{loop.index0}}" class="login-input" value="{{tel|e}}">
+    {%endfor%}
+    <input type="tel" name="telnew" class="login-input" value="{{tel|e}}" placeholder="Extra phone number">
+    <input type="submit" value="Změnit" class="button" style="width: 380px;"><br>
+</form>
+</div>
+{% endblock %}
