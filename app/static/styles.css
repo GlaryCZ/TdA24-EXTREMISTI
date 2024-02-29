@@ -70,9 +70,51 @@ label {
     :hover{
         transform: translateY(-2px);
     }
-
-
 }
+
+.nButtSub{
+
+    outline: 0;
+    grid-gap: 8px;
+    align-items: center;
+    background-color: #FECB2E;
+    color: #333333;
+    border: 1px solid #FECB2E;
+
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 20px;
+    font-weight: bold;
+
+    margin-top: 1vw;
+    margin-left: 35vw;
+    width: 30vw;
+    gap: 8px;
+    justify-content: center;
+    line-height: 1.5;
+    overflow: hidden;
+    padding: 12px 16px;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    transition: all .14s ease-out;
+    white-space: nowrap;
+    text-align: center;
+    display: grid;
+    place-items: center; 
+}
+    .nButtSub:hover {
+        box-shadow: 4px 4px 0 skyblue;
+        transform: translate(-4px,-4px);
+    }
+    .nButtSub:focus-visible{
+        outline-offset: 1px;
+    }
+
+
+
+
+
 
 nLogout{
     font-style: italic;
@@ -230,7 +272,8 @@ input[type="checkbox"]:hover {
     border: none;
     color: white;
     padding: 9px 20px;
-    text-align: center;
+    
+    
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
