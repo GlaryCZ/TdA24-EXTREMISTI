@@ -47,7 +47,7 @@ slide: function (event, ui) {
 <body>
     <div id="nav-bar">
         <a href = "{{url_for('lecotrs_search_page')|e}}">
-            <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" id="top-img">
+            <img src = "{{url_for('static', filename='TeacherDigitalAgency_LOGO_colour-white.svg')}}" height="100" id="top-img" class = "nImg">
         </a>
         {%if session["uuid"]%}
         <button class = "nButt">

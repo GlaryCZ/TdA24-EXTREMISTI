@@ -214,6 +214,16 @@ input[type="checkbox"]:hover {
     color: black;
 }
 
+.nImg{
+    padding-bottom: 1px;
+    transition: transform 200ms,background 200ms;
+
+}
+.nImg:hover{
+        transform: translateY(-7px);
+    }
+    
+
 
 .lecturer-about {
     display: inline-block;
