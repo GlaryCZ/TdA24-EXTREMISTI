@@ -3,8 +3,8 @@ from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-import db
-import auto_maily
+from . import db
+from . import auto_maily
 
 # to .env TODO: novej tag schvali admin, max pocet tagu Bootstrap
 
@@ -299,8 +299,8 @@ def lecturer_private_profile():
                 'INSERT INTO aproved_orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time, message_for_lecturer, order_id) VALUES (?,?,?,?,?,?,?,?,?,?);',
                 [data['uuid'], data["first_name"], data["last_name"], data['email'], data['phone_number'], str(data['tags']), data['meet_type'], data['date_and_time'], data['message'], data['order_id']]
             )
-        db.get_db().execute("DELETE FROM orders WHERE date_and_time = ? and uuid = ? and tags=?", 
-                            [data['date_and_time'], data['uuid'], str(data['tags'])])
+        db.get_db().execute("DELETE FROM orders WHERE order_id=?", 
+                            [data['order_id']])
         db.get_db().commit()
         cursor = db.get_db().execute('SELECT * FROM aproved_orders')
         rows = cursor.fetchall()
@@ -320,8 +320,15 @@ def approved_orders():
         order[5] = order[5].strip("][").replace("'", '').split(', ')
     if request.method == 'POST':
         data = dict(request.form)
+        if data["submit"] == "ne":
+            cursor = db.get_db().execute(
+                'DELETE FROM aproved_orders WHERE order_id = ?', [data["order_id"]])
+            db.get_db().commit()
+            auto_maily.mail('zruseno', data['email'], data['message'], data['first_name'], data['date'], data['order_id'])
+            return redirect(url_for("approved_orders"))
+
         if "date" not in data or data["date"] is None or data["date"] == "":
-            return render_template('approved-orders.html', orders=orders_info, message="Missing Date and time")
+            return redirect(url_for("approved_orders"))
         
         cursor = db.get_db().execute(
             f'SELECT date_and_time FROM aproved_orders WHERE order_id = ?',[data["order_id"]])

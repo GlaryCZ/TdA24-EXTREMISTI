@@ -26,10 +26,14 @@ def mail(state, email, message, name, time, oid):
         msg['Subject'] = f'Potvrzení lekce číslo {oid}'
         body = f"Dobrý den, vaše žádost o lekci s číslem {oid} od lektora {name} v {time} hodin byla přijata,\n  zpáva od vašeho mentora:{message} "
     elif state == 'ne':
-        msg['Subject'] = f'Zamítnutí lekce {oid}'
+        msg['Subject'] = f'Zamítnutí lekce číslo {oid}'
         body = f"Dobrý den, je nám líto, ale vaše žádost o lekci s číslem {oid} od {name} v {time} hodin byla zamítnuta"
     elif state == 'preobjednat':
-        body = f"Dobrý den, vaše objednávka lekce s číslem {oid} od lektora {name} byla přesunuta {time}"
+        msg['Subject'] = f'Změna termínu lekce číslo {oid}'
+        body = f"Dobrý den, vaše lekce s číslem {oid} od lektora {name} byla přesunuta {time}"
+    elif state == 'zruseno':
+        msg['Subject'] = f'Zrušení lekce číslo {oid}'
+        body = f"Dobrý den, vaše lekce s číslem {oid} od lektora {name} byla zrušena!"
 
     msg.attach(MIMEText(body, 'plain'))
 
