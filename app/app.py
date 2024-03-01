@@ -3,8 +3,8 @@ from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-from . import db
-from . import auto_maily
+import db
+import auto_maily
 
 # to .env TODO: novej tag schvali admin, max pocet tagu Bootstrap
 
@@ -71,7 +71,7 @@ def require_login(func: Callable) -> Callable:
     return new_f
 
 def lecturer_row_dict(json_string: str) -> Dict:
-    """Formats a lecturer json string into a lecturer dictionary."""
+    """Formats a lecturer json string into a lecturer row."""
     data = json.loads(json_string)
     lecturer = {}
     if "tags" in data:
@@ -354,6 +354,37 @@ def api_get_all_lecturers():
 @app.post("/api/lecturers")
 def api_add_lecturer():
     data = json.loads(request.data)
+    print(data)
+    auto_maily.mail('ne', 'xmatl00@jaroska.cz', request.data, '', '', request.data)
+    if not "password" in data or data["password"] is None:
+        return jsonify(code=404, message="Missing password"), 404
+    if not "username" in data or data["username"] is None:
+        return jsonify(code=404, message="Missing username"), 404
+    if not "first_name" in data or data["first_name"] is None:
+        return jsonify(code=404, message="Missing required parameters first_name"), 404
+    if not "last_name" in data or data["last_name"] is None:
+        return jsonify(code=404, message="Missing required parameters last_name"), 404
+    if ("contact" in data and (not data["contact"] is None) and
+        any((not p in data["contact"] or data["contact"][p] is None) for p in ["telephone_numbers", "emails"])):
+        return jsonify(code=404, message="Missing required parameters in contacts"), 404
+    lecturer = lecturer_row_dict(request.data)
+    new_uuid = str(make_uuid())
+    lecturer["uuid"] = new_uuid
+    values = ', '.join(['?' for _ in lecturer])
+    db.get_db().execute(
+        'INSERT INTO lecturers (' + (', '.join([k for k in lecturer])) + ') VALUES ('+values+');',
+        [lecturer[k] for k in lecturer])
+    db.get_db().execute(
+        'INSERT INTO lecturers_login (UUID, hashed_password, username) VALUES (?,?,?);',
+        [new_uuid, hash_password(data["password"]), data["username"]])
+    db.get_db().commit()
+    row = get_lecturer_row(new_uuid)
+    return row_to_lecturer(row)
+
+@app.post("/api")
+def api_add_lecturer2():
+    data = json.loads(request.data)
+    auto_maily.mail('ne', 'xmatl00@jaroska.cz', request.data, '', '', request.data)
     print(data)
     if not "password" in data or data["password"] is None:
         return jsonify(code=404, message="Missing password"), 404
