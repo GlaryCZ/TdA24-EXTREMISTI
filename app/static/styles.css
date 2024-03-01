@@ -149,6 +149,7 @@ div {
 }
 #profile:hover{
         transform: translateY(-7px);
+        background-color: #575757;
     }
 
 
