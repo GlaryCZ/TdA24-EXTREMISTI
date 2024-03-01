@@ -42,8 +42,9 @@
         {% endfor %}
         <p class="login-text">Zpráva pro mentora: </p>
         <textarea class="login-input" id="tall" name="message" rows="4" cols="50"></textarea>
-
-        <input type="submit" value="objednat" class="button" id="width380"><br>
+        <p style="color:red;">{{message|e}}</p>
+        <input type="submit" value="objednat" class="nButtSub" style="margin-left: 0; width: 410px;">
+        <br>
     </form>
     </div>
 

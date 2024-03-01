@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS aproved_orders (
   tags JSON DEFAULT('[]'),
   meet_type TEXT, --offline/online
   date_and_time TEXT,
-  message_for_lecturer TEXT
+  message_for_lecturer TEXT,
+  order_id TEXT
 );
 
 

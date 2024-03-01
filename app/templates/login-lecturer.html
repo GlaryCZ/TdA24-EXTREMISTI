@@ -12,6 +12,7 @@
     <input type="password" name="password" class="login-input">
     <input type="submit" value="přihlásit se" class="button" style="width: 380px;"><br>
 </form>
+<p style="color:red">{{message|e}}</p>
 <a href="{{url_for('lecturer_registration')}}">Create new account</a>
 </div>
 {% endblock %}

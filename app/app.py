@@ -3,8 +3,8 @@ from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-import db
-import auto_maily
+from . import db
+from . import auto_maily
 
 # to .env TODO: novej tag schvali admin, max pocet tagu Bootstrap
 
@@ -145,16 +145,14 @@ def get_all_tags() -> List:
     return [{"uuid":row[0], "name":row[1]}for row in rows]
 
 def get_locations() -> List:
+    
     cursor = db.get_db().execute('SELECT location FROM lecturers')
     loc = [row[0] for row in cursor.fetchall()]
+    loc.insert(0, "")
     cursor.close()
-    return loc
+    
+    return set(loc)
 
-def get_time() -> List:
-    cursor = db.get_db().execute('SELECT date_and_time FROM aproved_orders')
-    time = [row[0] for row in cursor.fetchall()][0]
-    cursor.close()
-    return time
 
 def get_lec_name(uuid : str) -> List:
     cursor = db.get_db().execute('SELECT first_name FROM lecturers WHERE uuid = ?', [uuid])
@@ -187,14 +185,14 @@ def lecturer_login():
     row = cursor.fetchone()
     cursor.close()
     if row is None:
-        return jsonify(code=404, message="Username not found"), 404 #TODO make this a popup
+        return render_template("login-lecturer.html", message="User not found")
     uuid = row[0]
     session["uuid"] = None
     session["password"] = None
     session["my_lecturer"] = None
     res = validate_login_info(uuid, data['password'])
     if res[1] != 200:
-        return jsonify(code=res[1], message=res[0]), res[1] #TODO make this a popup
+        return render_template("login-lecturer.html", message=res[0])
     session["uuid"] = uuid
     session["password"] = data['password']
     session["my_lecturer"] = row_to_lecturer(get_lecturer_row(uuid))
@@ -216,10 +214,13 @@ def lecturer_registration():
     cursor.close()
     claimed_names = [i[0] for i in rows]
     data = dict(request.form)
+    for i in data:
+        if data[i] == "":
+            return render_template("register-lecturer.html", message="Missing required field")
     if any(data[i] == "" for i in data):
-        return jsonify(code=404, message="Missing required field"), 404 #TODO make this a popup
+        return render_template("register-lecturer.html", message="Missing required field")
     if data['username'] in claimed_names:
-        return jsonify(code=404, message="Username already used"), 404 #TODO make this a popup
+        return render_template("register-lecturer.html", message="Username already used")
     new_uuid = str(make_uuid())
     db.get_db().execute(
         'INSERT INTO lecturers (uuid, first_name, last_name, contact) VALUES (?,?,?,?);',
@@ -266,7 +267,7 @@ def lecotrs_search_page():
 def lecturer_edit_profile():
     if request.method == "POST":
         data = dict(request.form)
-        lecturer = {key:value for key, value in data.items() if (key in COLUMNS) and (value != "") and (not value is None)}
+        lecturer = {key:value for key, value in data.items() if (key in COLUMNS) and (not value is None)}
         emails = [value for key, value in data.items() if ("email" in key) and (value != "") and (not value is None)]
         telephone_numbers = [value for key, value in data.items() if ("tel" in key) and (value != "") and (not value is None)]
         lecturer["contact"] = json.dumps({"telephone_numbers":telephone_numbers, "emails":emails})
@@ -286,16 +287,17 @@ def lecturer_edit_profile():
 def lecturer_private_profile():
     if request.method == 'POST':
         data = dict(request.form) # TODO
+        print(data)
         try:
-            auto_maily.mail(data['submit'], data['email'], data['message'], get_lec_name(data['uuid']), get_time())
+            auto_maily.mail(data['submit'], data['email'], data['message'], get_lec_name(data['uuid']), data['date_and_time'], data['order_id'])
             
         except ValueError:
                 ("Wrong email!")
         print(data)
         if data['submit'] == 'ano':
             db.get_db().execute(
-                'INSERT INTO aproved_orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time, message_for_lecturer) VALUES (?,?,?,?,?,?,?,?,?);',
-                [data['uuid'], data["first_name"], data["last_name"], data['email'], data['phone_number'], str(data['tags']), data['meet_type'], data['date_and_time'], data['message']]
+                'INSERT INTO aproved_orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time, message_for_lecturer, order_id) VALUES (?,?,?,?,?,?,?,?,?,?);',
+                [data['uuid'], data["first_name"], data["last_name"], data['email'], data['phone_number'], str(data['tags']), data['meet_type'], data['date_and_time'], data['message'], data['order_id']]
             )
         db.get_db().execute("DELETE FROM orders WHERE date_and_time = ? and uuid = ? and tags=?", 
                             [data['date_and_time'], data['uuid'], str(data['tags'])])
@@ -313,12 +315,23 @@ def lecturer_private_profile():
 @app.route("/my_profile/approved-orders", methods=['GET', 'POST'])
 @require_login
 def approved_orders():
-    if request.method == 'POST':
-        # TODO:
-        return 'POST'
     orders_info = get_orders_for_lecturer('aproved_orders')
     for order in orders_info:
         order[5] = order[5].strip("][").replace("'", '').split(', ')
+    if request.method == 'POST':
+        data = dict(request.form)
+        if "date" not in data or data["date"] is None or data["date"] == "":
+            return render_template('approved-orders.html', orders=orders_info, message="Missing Date and time")
+        
+        cursor = db.get_db().execute(
+            f'SELECT date_and_time FROM aproved_orders WHERE order_id = ?',[data["order_id"]])
+        old_date = cursor.fetchone()[0]
+        cursor.close()
+        db.get_db().execute(
+            'UPDATE aproved_orders SET date_and_time = ? WHERE order_id = ?',
+            [data["date"], data["order_id"]])
+        db.get_db().commit()
+        auto_maily.mail('preobjednat', data['email'], data['message'], data['first_name'], f"z termínu {old_date} na termín {data['date']}", data['order_id'])
     return render_template('approved-orders.html', orders=orders_info)
 
 @app.route("/lecturer/<uuid>")
@@ -397,11 +410,11 @@ def api_lecturer_edit(uuid, password):
     
 @app.route("/order/<uuid>", methods = ["GET", "POST"])
 def order_page(uuid):
+    row = get_lecturer_row(uuid)
+    if row is None:
+        return jsonify(code=404, message="User not found"), 404
+    lecturer = row_to_lecturer(row)
     if request.method == "GET":
-        row = get_lecturer_row(uuid)
-        if row is None:
-            return jsonify(code=404, message="User not found"), 404
-        lecturer = row_to_lecturer(row)
         # print(lecturer.tag)
         return render_template('order-lecturer.html', lecturer = lecturer)
     else:
@@ -410,17 +423,22 @@ def order_page(uuid):
         my_tags = [get_tag("uuid", id)[1] for id in my_tags_uuids]
         # return f'{data}'
         new_dict = {key: val for key, val in data.items() if key != 'message'}
+        for i in new_dict:
+            if new_dict[i] == '':
+                d = {'first-name': 'Jméno', 'last-name': 'Příjmení', 'email': 'email', 'phone-number': 'telefonní číslo', 'date': 'datum'}
+                return render_template('order-lecturer.html', lecturer = lecturer, message=f"Chybí vám {d[i]}")
         if any(new_dict[i] == "" for i in new_dict):
-            return jsonify(code=404, message="Missing required field"), 404 #TODO make this a popup
+            return render_template('order-lecturer.html', lecturer = lecturer, message="Missing required field")
+        order_id = str((make_uuid().int>>32)%10000000)
         db.get_db().execute(
             'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time, message_for_lecturer, order_id) VALUES (?,?,?,?,?,?,?,?,?,?);',
-            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], str(my_tags), data['meet-type'], data['date'], data['message'], str(make_uuid().int>>32)] # TODO:
+            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], str(my_tags), data['meet-type'], data['date'], data['message'], order_id]
         )
         db.get_db().commit()
 
 
         row = get_lecturer_row(uuid)
-        return render_template('order-confirmation.html', lecturer = row_to_lecturer(row), email=data['email'])
+        return render_template('order-confirmation.html', lecturer = row_to_lecturer(row), email=data['email'], order_id=order_id)
     
 
     

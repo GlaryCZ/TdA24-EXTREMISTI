@@ -65,7 +65,7 @@ label {
     font-weight: 700;
     line-height: 1;
     position: absolute;
-    right: 10vw;
+    right: 15vw;
     transition: transform 200ms,background 200ms;
 
 }
@@ -136,6 +136,17 @@ footer {
 div {
     height: auto;
     width: auto;
+}
+
+#profile2 {
+    box-shadow: 0 0 3px 5px #202020; /*  #74b2ca  */
+    background-color: #393939;
+    border-radius: 50px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 50px;
+    padding-bottom: 1px;
+    transition: transform 200ms,background 200ms;
 }
 
 #profile {
@@ -440,4 +451,11 @@ input[type="checkbox"]:hover {
     justify-content: center;
       align-items: center;
     display: grid;  
+}
+
+.flatpickr-calendar {
+    font-family: OpenSans;
+}
+.flatpickr-month {
+    font-family: Lalezar;
 }

@@ -2,7 +2,7 @@ config = {
     enableTime: true,
     dateFormat: "d-m-Y H",
     time_24hr: true,
-    minDate: new Date().fp_incr(3),
+    minDate: new Date().fp_incr(1),
     minuteIncrement: 60,
     altFormat: "j. F, H:00",
     altInput: true,

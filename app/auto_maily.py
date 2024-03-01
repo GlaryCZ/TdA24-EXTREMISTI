@@ -2,7 +2,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def mail(state, email, message, name, time):
+def mail(state, email, message, name, time, oid):
     # Údaje pro přihlášení k SMTP serveru Gmail
     SMTP_SERVER = 'smtp.gmail.com'
     SMTP_PORT = 587  # 587 pro TLS
@@ -22,12 +22,14 @@ def mail(state, email, message, name, time):
 
 
 
-    if state=='ano':
-        msg['Subject'] = 'Potvrzení lekce'
-        body = f"Dobrý den, vaše žádost od lektora {name} v {time} hodin byla přijata, \n {message} "
-    else:
-        msg['Subject'] = 'Zamítnutí lekce'
-        body = f"Dobrý den, je nám líto, ale vaše žádost o lekci od {name} v {time} hodin byla zamítnuta"
+    if state == 'ano':
+        msg['Subject'] = f'Potvrzení lekce číslo {oid}'
+        body = f"Dobrý den, vaše žádost o lekci s číslem {oid} od lektora {name} v {time} hodin byla přijata,\n  zpáva od vašeho mentora:{message} "
+    elif state == 'ne':
+        msg['Subject'] = f'Zamítnutí lekce {oid}'
+        body = f"Dobrý den, je nám líto, ale vaše žádost o lekci s číslem {oid} od {name} v {time} hodin byla zamítnuta"
+    elif state == 'preobjednat':
+        body = f"Dobrý den, vaše objednávka lekce s číslem {oid} od lektora {name} byla přesunuta {time}"
 
     msg.attach(MIMEText(body, 'plain'))
 

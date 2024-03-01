@@ -5,12 +5,12 @@
 {% block content %}
 
 <div>
-    <button class = "nButt" style="margin-top: -170px;margin-left: 37px;left: 1187.87px;">
+    <button class = "nButt" style="margin-top: -170px; margin-right: 30vw;">
     <a href="{{url_for('lecturer_edit_profile')}}">Edit my profile</a>
     </button>
 </div>
 
-<div id="profile" class="profiles">
+<div id="profile2">
     <h1>Nevyřízené objednávky</h1>
     <p>Po potvrzení/zamítnutí objednávky bude klient automaticky informován mailem.</p>
 {% for order in orders %}
@@ -43,10 +43,14 @@
             <input name="first_name" type="hidden" value="{{order[1]}}">
             <input name="last_name" type="hidden" value="{{order[2]}}">
             <input name="uuid" type="hidden" value="{{order[0]}}">
+            <input name="order_id" type="hidden" value="{{order[9]}}">
+
             <h1>Zpráva pro klienta: </h1>
             <textarea class="login-input" name="message" rows="4" cols="50" style="height: 200px;"></textarea><br>
-            <button class="button" style="width: 300px;" name="submit" value="ano">Potvrdit objednávku</button>
-            <button class="decline" name="submit" value="ne">Zamítnout</button>
+            <button class="nButtSub" name="submit" value="ne" style="margin-left: 343px; width: 300px; background-color: red;">Zamítnout</button>
+            <button class="nButtSub" style="width: 300px; background-color: greenyellow; margin-left: -3vw;" name="submit" value="ano">Potvrdit objednávku</button>
+            
+            
         </form>
     </div>
 
