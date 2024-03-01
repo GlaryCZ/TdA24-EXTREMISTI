@@ -3,8 +3,8 @@ from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-from . import db
-from . import auto_maily
+import db
+import auto_maily
 
 # to .env TODO: novej tag schvali admin, max pocet tagu Bootstrap
 
@@ -413,8 +413,8 @@ def order_page(uuid):
         if any(new_dict[i] == "" for i in new_dict):
             return jsonify(code=404, message="Missing required field"), 404 #TODO make this a popup
         db.get_db().execute(
-            'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time, message_for_lecturer) VALUES (?,?,?,?,?,?,?,?,?);',
-            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], str(my_tags), data['meet-type'], data['date'], data['message']]
+            'INSERT INTO orders (uuid, first_name, last_name, email, phone_number, tags, meet_type, date_and_time, message_for_lecturer, order_id) VALUES (?,?,?,?,?,?,?,?,?,?);',
+            [uuid, data["first-name"], data["last-name"], data['email'], data['phone-number'], str(my_tags), data['meet-type'], data['date'], data['message'], make_uuid().int>>32] # TODO:
         )
         db.get_db().commit()
 

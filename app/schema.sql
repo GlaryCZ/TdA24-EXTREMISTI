@@ -49,4 +49,5 @@ CREATE TABLE IF NOT EXISTS orders (
   meet_type TEXT, --offline/online
   date_and_time TEXT,
   message_for_lecturer TEXT
+  order_id INTEGER
 );
