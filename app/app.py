@@ -3,8 +3,8 @@ from typing import List, Dict, Tuple, Callable
 from uuid import uuid4 as make_uuid
 from hashlib import sha256
 from flask import Flask, jsonify, render_template, json, request, session, redirect, url_for
-import db
-import auto_maily
+from . import db
+from . import auto_maily
 
 # to .env TODO: novej tag schvali admin, max pocet tagu Bootstrap
 
@@ -341,6 +341,7 @@ def api_get_all_lecturers():
 @app.post("/api/lecturers")
 def api_add_lecturer():
     data = json.loads(request.data)
+    print(data)
     if not "password" in data or data["password"] is None:
         return jsonify(code=404, message="Missing password"), 404
     if not "username" in data or data["username"] is None:
